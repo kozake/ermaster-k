@@ -524,6 +524,7 @@ public class XMLLoader {
 		this.loadTriggerSet(diagramContents.getTriggerSet(), parent);
 
 		this.loadSettings(settings, parent, context);
+		this.locadCategoryLocation(parent, context);
 
 		context.resolve();
 	}
@@ -1961,5 +1962,59 @@ public class XMLLoader {
 		}
 
 		diagram.setDefaultColor(rgb[0], rgb[1], rgb[2]);
+	}
+
+	private void locadCategoryLocation(Element parent, LoadContext context) {
+		Element element = this.getElement(parent, "contents");
+
+		NodeList nodeList = element.getChildNodes();
+
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			if (nodeList.item(i).getNodeType() != Node.ELEMENT_NODE) {
+				continue;
+			}
+			Element node = (Element) nodeList.item(i);
+			String id = this.getStringValue(node, "id");
+			NodeElement nodeElement = context.nodeElementMap.get(id);
+
+			NodeList nodeMapList = node.getElementsByTagName("category_location_map");
+			if (nodeMapList.getLength() > 0) {
+				if (nodeMapList.item(0).getNodeType() != Node.ELEMENT_NODE) {
+					continue;
+				}
+				Element mapElement = (Element) nodeMapList.item(0);
+				locadCategoryLocation(nodeElement, mapElement, context);
+			}
+		}
+	}
+
+	private void locadCategoryLocation(NodeElement nodeElement, Element mapElement, LoadContext context) {
+		NodeList nodeList = mapElement.getChildNodes();
+		
+		Map<Category, Location> categoryLocationMap = nodeElement.getCategoryLocationMap();
+
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			if (nodeList.item(i).getNodeType() != Node.ELEMENT_NODE) {
+				continue;
+			}
+			Element node = (Element) nodeList.item(i);
+
+			NodeList locationNodeList = node.getElementsByTagName("location");
+			if (locationNodeList.getLength() == 0 | locationNodeList.item(0).getNodeType() != Node.ELEMENT_NODE) {
+				continue;
+			}
+			Element locationElement = (Element) locationNodeList.item(0);
+
+			String id = this.getStringValue(node, "category");
+			Category category = (Category) context.nodeElementMap.get(id);
+			
+			int x = this.getIntValue(locationElement, "x");
+			int y = this.getIntValue(locationElement, "y");
+			int width = this.getIntValue(locationElement, "width");
+			int height = this.getIntValue(locationElement, "height");
+			Location location = new Location(x, y, width, height);
+			
+			categoryLocationMap.put(category, location);
+		}
 	}
 }

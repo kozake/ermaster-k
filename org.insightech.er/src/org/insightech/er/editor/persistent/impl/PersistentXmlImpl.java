@@ -24,6 +24,7 @@ import org.insightech.er.editor.model.diagram_contents.element.connection.Bendpo
 import org.insightech.er.editor.model.diagram_contents.element.connection.CommentConnection;
 import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElement;
 import org.insightech.er.editor.model.diagram_contents.element.connection.Relation;
+import org.insightech.er.editor.model.diagram_contents.element.node.Location;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeElement;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeSet;
 import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
@@ -1243,18 +1244,40 @@ public class PersistentXmlImpl extends Persistent {
 		xml.append("<id>")
 				.append(Format.toString(context.nodeElementMap.get(nodeElement)))
 				.append("</id>\n");
-		xml.append("<height>").append(nodeElement.getHeight())
+		Location location = nodeElement.getLocationInAll();
+		xml.append("<height>").append(location.height)
 				.append("</height>\n");
-		xml.append("<width>").append(nodeElement.getWidth())
+		xml.append("<width>").append(location.width)
 				.append("</width>\n");
 		xml.append("\t<font_name>").append(escape(nodeElement.getFontName()))
 				.append("</font_name>\n");
 		xml.append("\t<font_size>").append(nodeElement.getFontSize())
 				.append("</font_size>\n");
-		xml.append("<x>").append(nodeElement.getX()).append("</x>\n");
-		xml.append("<y>").append(nodeElement.getY()).append("</y>\n");
+		xml.append("<x>").append(location.x).append("</x>\n");
+		xml.append("<y>").append(location.y).append("</y>\n");
 		xml.append(this.createXMLColor(nodeElement.getColor()));
 
+		Map<Category, Location> categoryLocationMap = nodeElement.getCategoryLocationMap();
+		if (!categoryLocationMap.isEmpty()) {
+			xml.append("<category_location_map>\n");
+			for (Category category : categoryLocationMap.keySet()) {
+				xml.append("\t<category_location_set>\n");
+				Location categoryLocation = categoryLocationMap.get(category);
+
+				xml.append("\t\t<category>")
+				.append(context.nodeElementMap.get(category))
+				.append("</category>\n");
+
+				xml.append("\t\t<location>")
+				.append("<x>").append(categoryLocation.x).append("</x>")
+				.append("<y>").append(categoryLocation.y).append("</y>")
+				.append("<height>").append(categoryLocation.height).append("</height>")
+				.append("<width>").append(categoryLocation.width).append("</width>")
+				.append("</location>\n");
+				xml.append("\t</category_location_set>\n");
+			}
+			xml.append("</category_location_map>\n");
+		}
 		List<ConnectionElement> incomings = nodeElement.getIncomings();
 		xml.append(this.createXMLConnections(incomings, context));
 

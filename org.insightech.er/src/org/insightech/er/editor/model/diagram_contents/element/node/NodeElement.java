@@ -2,7 +2,9 @@ package org.insightech.er.editor.model.diagram_contents.element.node;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.insightech.er.editor.model.ERDiagram;
 import org.insightech.er.editor.model.ObjectModel;
@@ -15,6 +17,8 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 	private static final long serialVersionUID = -5143984125818569247L;
 
 	private Location location;
+	
+	private Map<Category, Location> categoryLocationMap = new HashMap<Category, Location>();
 
 	private Location actualLocation;
 
@@ -36,29 +40,56 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 		return diagram;
 	}
 
+	public Category getCurrentCategory() {
+		return this.diagram != null ? diagram.getCurrentCategory() : null;
+	}
+
 	public int getX() {
-		return this.location.x;
+		return this.getLocationInCurrentCategory().x;
 	}
 
 	public int getY() {
-		return this.location.y;
+		return this.getLocationInCurrentCategory().y;
 	}
 
 	public int getWidth() {
-		return this.location.width;
+		return this.getLocationInCurrentCategory().width;
 	}
 
 	public int getHeight() {
-		return this.location.height;
+		return this.getLocationInCurrentCategory().height;
 	}
 
 	public void setLocation(Location location) {
-		this.location = location;
+		Category category = getCurrentCategory();
+		if (category != null && category.contains(this)) {
+			categoryLocationMap.put(category, location);
+		} else {
+			this.location = location;
+		}
 	}
 
 	public Location getLocation() {
-		return new Location(this.location.x, this.location.y,
-				this.location.width, this.location.height);
+		Location location = getLocationInCurrentCategory();
+		return new Location(location.x, location.y, location.width, location.height);
+	}
+
+	public Location getLocation(Category category) {
+		if (category != null && category.contains(this)) {
+			Location location = categoryLocationMap.get(category);
+			if (location!= null) {
+				return location;
+			}
+		}
+		return this.location;
+	}
+
+	public Location getLocationInAll() {
+		return new Location(this.location.x, this.location.y, this.location.width, this.location.height);
+	}
+
+	private Location getLocationInCurrentCategory() {
+		return getLocation(getCurrentCategory());
 	}
 
 	public Location getActualLocation() {
@@ -155,6 +186,19 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 		Collections.sort(this.incomings);
 	}
 	
+
+	public void addCategory(Category category) {
+		categoryLocationMap.put(category, getLocation());
+	}
+	
+	public void removeCategory(Category category) {
+		categoryLocationMap.remove(category);
+	}
+	
+	public Map<Category, Location> getCategoryLocationMap() {
+		return categoryLocationMap;
+	}
+
 	/**
 	 * {@inheritDoc}
 	 */

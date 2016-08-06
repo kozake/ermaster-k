@@ -144,6 +144,8 @@ public class MoveElementCommand extends AbstractCommand {
 			category.refreshVisuals();
 		}
 
+		this.element.setLocation(new Location(x, y, width, height));
+
 		for (Category category : this.removedCategories) {
 			category.remove(this.element);
 		}
@@ -152,7 +154,6 @@ public class MoveElementCommand extends AbstractCommand {
 			category.add(this.element);
 		}
 
-		this.element.setLocation(new Location(x, y, width, height));
 		this.element.refreshVisuals();
 	}
 

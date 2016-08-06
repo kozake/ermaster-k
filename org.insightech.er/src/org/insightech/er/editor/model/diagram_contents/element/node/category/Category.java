@@ -119,11 +119,13 @@ public class Category extends NodeElement implements IResizable,
 	public void add(NodeElement nodeElement) {
 		if (!(nodeElement instanceof Category)) {
 			this.nodeElementList.add(nodeElement);
+			nodeElement.addCategory(this);
 		}
 	}
 
 	public void remove(NodeElement nodeElement) {
 		this.nodeElementList.remove(nodeElement);
+		nodeElement.removeCategory(this);
 	}
 
 	public List<ERTable> getTableContents() {
