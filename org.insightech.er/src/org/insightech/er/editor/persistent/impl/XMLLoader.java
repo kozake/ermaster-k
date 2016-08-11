@@ -1517,6 +1517,7 @@ public class XMLLoader {
 			} else if ("image".equals(node.getNodeName())) {
 				InsertedImage insertedImage = this.loadInsertedImage(
 						(Element) node, context);
+				insertedImage.setDiagram(this.diagram);
 				contents.addNodeElement(insertedImage);
 			}
 		}
@@ -1743,6 +1744,8 @@ public class XMLLoader {
 
 	private Note loadNote(Element element, LoadContext context) {
 		Note note = new Note();
+
+		note.setDiagram(this.diagram);
 
 		note.setText(this.getStringValue(element, "text"));
 		this.loadNodeElement(note, element, context);
