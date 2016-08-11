@@ -74,6 +74,9 @@ public class Category extends NodeElement implements IResizable,
 			this.setLocation(new Location(categoryX, categoryY, categoryWidth,
 					categoryHeight));
 		}
+		for (NodeElement content : contetns) {
+			content.addCategory(this);
+		}
 	}
 
 	public boolean contains(NodeElement nodeElement) {

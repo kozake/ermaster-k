@@ -1,10 +1,12 @@
 package org.insightech.er.editor.model.diagram_contents.element.connection;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.insightech.er.editor.model.AbstractModel;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeElement;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 import org.insightech.er.editor.model.diagram_contents.element.node.table.TableView;
 
 public abstract class ConnectionElement extends AbstractModel implements
@@ -15,25 +17,14 @@ public abstract class ConnectionElement extends AbstractModel implements
 	protected NodeElement source;
 
 	protected NodeElement target;
+	
+	private ConnectionElementLocation location = new ConnectionElementLocation();
 
-	private int sourceXp;
-
-	private int sourceYp;
-
-	private int targetXp;
-
-	private int targetYp;
+	private Map<Category, ConnectionElementLocation> categoryLocationMap = new HashMap<Category, ConnectionElementLocation>();
 
 	private int[] color;
 
-	private List<Bendpoint> bendPoints = new ArrayList<Bendpoint>();
-
 	public ConnectionElement() {
-		this.sourceXp = -1;
-		this.sourceYp = -1;
-		this.targetXp = -1;
-		this.targetYp = -1;
-
 		this.setColor(0, 0, 0);
 	}
 
@@ -103,6 +94,8 @@ public abstract class ConnectionElement extends AbstractModel implements
 		if (this.source != null) {
 			this.source.addOutgoing(this);
 		}
+		removeCategory(getCurrentCategory());
+		addCategory(getCurrentCategory());
 	}
 
 	public void setSourceAndTarget(NodeElement source, NodeElement target) {
@@ -120,6 +113,8 @@ public abstract class ConnectionElement extends AbstractModel implements
 		if (this.target != null) {
 			this.target.addIncoming(this);
 		}
+		removeCategory(getCurrentCategory());
+		addCategory(getCurrentCategory());
 	}
 
 	public NodeElement getTarget() {
@@ -141,65 +136,59 @@ public abstract class ConnectionElement extends AbstractModel implements
 	}
 
 	public void addBendpoint(int index, Bendpoint point) {
-		bendPoints.add(index, point);
+		getCurrentCategoryLocation().addBendpoint(index, point);
 	}
 
 	public void setBendpoints(List<Bendpoint> points) {
-		bendPoints = points;
+		getCurrentCategoryLocation().setBendpoints(points);
 	}
 
 	public List<Bendpoint> getBendpoints() {
-		return bendPoints;
+		return getCurrentCategoryLocation().getBendpoints();
 	}
 
 	public void removeBendpoint(int index) {
-		bendPoints.remove(index);
+		getCurrentCategoryLocation().getBendpoints().remove(index);
 	}
 
 	public void replaceBendpoint(int index, Bendpoint point) {
-		bendPoints.set(index, point);
+		getCurrentCategoryLocation().getBendpoints().set(index, point);
 	}
 
 	public int getSourceXp() {
-		return sourceXp;
+		return getCurrentCategoryLocation().getSourceXp();
 	}
 
 	public void setSourceLocationp(int sourceXp, int sourceYp) {
-		this.sourceXp = sourceXp;
-		this.sourceYp = sourceYp;
+		ConnectionElementLocation location = getCurrentCategoryLocation();
+		location.setSourceXp(sourceXp);
+		location.setSourceYp(sourceYp);
 	}
 
 	public int getSourceYp() {
-		return sourceYp;
+		return getCurrentCategoryLocation().getSourceYp();
 	}
 
 	public int getTargetXp() {
-		return targetXp;
+		return getCurrentCategoryLocation().getTargetXp();
 	}
 
 	public void setTargetLocationp(int targetXp, int targetYp) {
-		this.targetXp = targetXp;
-		this.targetYp = targetYp;
+		ConnectionElementLocation location = getCurrentCategoryLocation();
+		location.setTargetXp(targetXp);
+		location.setTargetYp(targetYp);
 	}
 
 	public int getTargetYp() {
-		return targetYp;
+		return getCurrentCategoryLocation().getTargetYp();
 	}
 
 	public boolean isSourceAnchorMoved() {
-		if (this.sourceXp != -1) {
-			return true;
-		}
-
-		return false;
+		return getSourceXp() != -1;
 	}
 
 	public boolean isTargetAnchorMoved() {
-		if (this.targetXp != -1) {
-			return true;
-		}
-
-		return false;
+		return getTargetXp() != -1;
 	}
 
 	public void setColor(int red, int green, int blue) {
@@ -219,22 +208,52 @@ public abstract class ConnectionElement extends AbstractModel implements
 		}
 	}
 
+	public void addCategory(Category category) {
+		if (category != null
+				&& !categoryLocationMap.containsKey(category)
+			    && category.contains(this.source)
+			    && category.contains(this.target)) {
+
+			categoryLocationMap.put(category, location.clone());
+		}
+	}
+	
+	public void removeCategory(Category category) {
+		categoryLocationMap.remove(category);
+	}
+
+	private Category getCurrentCategory() {
+
+		return source != null ? source.getCurrentCategory() : 
+			   target != null ? target.getCurrentCategory() : null;
+	}
+	
+	private ConnectionElementLocation getCurrentCategoryLocation() {
+
+		Category currentCategory = getCurrentCategory();
+		if (currentCategory != null && categoryLocationMap.get(currentCategory) == null) {
+			addCategory(currentCategory);
+		}
+
+		return categoryLocationMap.containsKey(currentCategory) ?
+				categoryLocationMap.get(currentCategory) : location;
+	}
+
 	@Override
 	public ConnectionElement clone() {
 		ConnectionElement clone = (ConnectionElement) super.clone();
-
-		List<Bendpoint> cloneBendPoints = new ArrayList<Bendpoint>();
-		for (Bendpoint bendPoint : bendPoints) {
-			cloneBendPoints.add((Bendpoint) bendPoint.clone());
-		}
-
-		clone.bendPoints = cloneBendPoints;
+		clone.location = location.clone();
 
 		if (this.color != null) {
 			clone.color = new int[] { this.color[0], this.color[1],
 					this.color[2] };
 		}
 
+		clone.categoryLocationMap = new HashMap<Category, ConnectionElementLocation>();
+		for (Category key : categoryLocationMap.keySet()) {
+			clone.categoryLocationMap.put(key, categoryLocationMap.get(key).clone());
+		}
+		
 		return clone;
 	}
 }

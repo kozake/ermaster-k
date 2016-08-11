@@ -189,10 +189,22 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 
 	public void addCategory(Category category) {
 		categoryLocationMap.put(category, getLocation());
+		for (ConnectionElement conn : incomings) {
+			conn.addCategory(category);
+		}
+		for (ConnectionElement conn : outgoings) {
+			conn.addCategory(category);
+		}
 	}
 	
 	public void removeCategory(Category category) {
 		categoryLocationMap.remove(category);
+		for (ConnectionElement conn : incomings) {
+			conn.removeCategory(category);
+		}
+		for (ConnectionElement conn : outgoings) {
+			conn.removeCategory(category);
+		}
 	}
 	
 	public Map<Category, Location> getCategoryLocationMap() {
