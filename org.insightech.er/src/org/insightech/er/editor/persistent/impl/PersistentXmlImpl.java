@@ -23,6 +23,7 @@ import org.insightech.er.editor.model.diagram_contents.DiagramContents;
 import org.insightech.er.editor.model.diagram_contents.element.connection.Bendpoint;
 import org.insightech.er.editor.model.diagram_contents.element.connection.CommentConnection;
 import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElement;
+import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElementLocation;
 import org.insightech.er.editor.model.diagram_contents.element.connection.Relation;
 import org.insightech.er.editor.model.diagram_contents.element.node.Location;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeElement;
@@ -1594,17 +1595,51 @@ public class PersistentXmlImpl extends Persistent {
 		xml.append("<target>")
 				.append(context.nodeElementMap.get(connection.getTarget()))
 				.append("</target>\n");
-		xml.append("\t<source_xp>").append(connection.getSourceXp())
+		
+		ConnectionElementLocation location = connection.getLocation();
+		
+		xml.append("\t<source_xp>").append(location.getSourceXp())
 				.append("</source_xp>\n");
-		xml.append("\t<source_yp>").append(connection.getSourceYp())
+		xml.append("\t<source_yp>").append(location.getSourceYp())
 				.append("</source_yp>\n");
-		xml.append("\t<target_xp>").append(connection.getTargetXp())
+		xml.append("\t<target_xp>").append(location.getTargetXp())
 				.append("</target_xp>\n");
-		xml.append("\t<target_yp>").append(connection.getTargetYp())
+		xml.append("\t<target_yp>").append(location.getTargetYp())
 				.append("</target_yp>\n");
 
-		for (Bendpoint bendpoint : connection.getBendpoints()) {
+		for (Bendpoint bendpoint : location.getBendpoints()) {
 			xml.append(tab(this.createXML(bendpoint)));
+		}
+		
+		Map<Category, ConnectionElementLocation> categoryLocationMap = 
+				connection.getCategoryLocationMap();
+		if (!categoryLocationMap.isEmpty()) {
+			xml.append("\t<category_location_map>\n");
+			for (Category category : categoryLocationMap.keySet()) {
+				xml.append("\t\t<category_location_set>\n");
+				ConnectionElementLocation categoryLocation = categoryLocationMap.get(category);
+
+				xml.append("\t\t\t<category>")
+				.append(context.nodeElementMap.get(category))
+				.append("</category>\n");
+
+				xml.append("\t\t\t<location>\n");
+				xml.append("\t\t\t\t<source_xp>").append(categoryLocation.getSourceXp())
+				.append("</source_xp>")
+				.append("<source_yp>").append(categoryLocation.getSourceYp())
+				.append("</source_yp>")
+				.append("<target_xp>").append(categoryLocation.getTargetXp())
+				.append("</target_xp>")
+				.append("<target_yp>").append(categoryLocation.getTargetYp())
+				.append("</target_yp>\n");
+
+				for (Bendpoint bendpoint : categoryLocation.getBendpoints()) {
+					xml.append(tab(tab(tab(tab(this.createXML(bendpoint))))));
+				}
+				xml.append("\t\t\t</location>\n");
+				xml.append("\t\t</category_location_set>\n");
+			}
+			xml.append("\t</category_location_map>\n");
 		}
 
 		xml.append(tab(this.createXMLColor(connection.getColor())));

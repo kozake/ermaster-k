@@ -35,6 +35,7 @@ import org.insightech.er.editor.model.diagram_contents.DiagramContents;
 import org.insightech.er.editor.model.diagram_contents.element.connection.Bendpoint;
 import org.insightech.er.editor.model.diagram_contents.element.connection.CommentConnection;
 import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElement;
+import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElementLocation;
 import org.insightech.er.editor.model.diagram_contents.element.connection.Relation;
 import org.insightech.er.editor.model.diagram_contents.element.node.Location;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeElement;
@@ -1863,9 +1864,13 @@ public class XMLLoader {
 		connection.setTargetLocationp(this.getIntValue(element, "target_xp"),
 				this.getIntValue(element, "target_yp"));
 
-		NodeList nodeList = element.getElementsByTagName("bendpoint");
+		NodeList nodeList = element.getChildNodes();
 
+		int index = 0;
 		for (int i = 0; i < nodeList.getLength(); i++) {
+			if (!nodeList.item(i).getNodeName().equals("bendpoint")) {
+				continue;
+			}
 			Element bendPointElement = (Element) nodeList.item(i);
 
 			Bendpoint bendpoint = new Bendpoint(this.getIntValue(
@@ -1875,7 +1880,7 @@ public class XMLLoader {
 			bendpoint.setRelative(this.getBooleanValue(bendPointElement,
 					"relative"));
 
-			connection.addBendpoint(i, bendpoint);
+			connection.addBendpoint(index++, bendpoint);
 		}
 
 		this.loadConnectionColor(connection, element);
@@ -2019,6 +2024,91 @@ public class XMLLoader {
 			Location location = new Location(x, y, width, height);
 			
 			categoryLocationMap.put(category, location);
+		}
+	}
+
+	private void loadConnectionsCategoryLocation(Element parent, LoadContext context) {
+		Element connectionsElement = this.getElement(parent, "connections");
+
+		if (connectionsElement != null) {
+			NodeList nodeList = connectionsElement.getChildNodes();
+
+			for (int i = 0; i < nodeList.getLength(); i++) {
+				if (nodeList.item(i).getNodeType() != Node.ELEMENT_NODE) {
+					continue;
+				}
+
+				Element connectionElement = (Element) nodeList.item(i);
+				String id = this.getStringValue(connectionsElement, "id");
+				ConnectionElement connection = context.connectionMap.get(id);
+
+				NodeList nodeMapList = connectionElement.getElementsByTagName("category_location_map");
+				
+				if (nodeMapList.getLength() > 0) {
+					if (nodeMapList.item(0).getNodeType() != Node.ELEMENT_NODE) {
+						continue;
+					}
+
+					Element mapElement = (Element) nodeMapList.item(0);
+
+					loadConnectionCategoryLocation(connection, mapElement, context);
+				}
+			}
+		}
+	}
+
+	private void loadConnectionCategoryLocation(ConnectionElement connection, Element mapElement, LoadContext context) {
+		
+		Map<Category, ConnectionElementLocation> categoryLocationMap = connection.getCategoryLocationMap();
+
+		NodeList nodeList = mapElement.getChildNodes();
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			if (nodeList.item(i).getNodeType() != Node.ELEMENT_NODE) {
+				continue;
+			}
+			Element mapSetElement = (Element) nodeList.item(i);
+
+			String id = this.getStringValue(mapSetElement, "category");
+			Category category = (Category) context.nodeElementMap.get(id);
+
+			NodeList locationNodeList = mapSetElement.getElementsByTagName("location");
+			if (locationNodeList.getLength() == 0 | locationNodeList.item(0).getNodeType() != Node.ELEMENT_NODE) {
+				continue;
+			}
+			Element locationElement = (Element) locationNodeList.item(0);
+
+			ConnectionElementLocation location = new ConnectionElementLocation();
+			location.setSourceXp(this.getIntValue(locationElement, "source_xp"));
+			location.setSourceYp(this.getIntValue(locationElement, "source_yp"));
+			location.setTargetXp(this.getIntValue(locationElement, "target_xp"));
+			location.setTargetYp(this.getIntValue(locationElement, "target_yp"));
+
+			loadConnectionCategoryLocationBendpoint(location, locationElement, context);
+			
+			categoryLocationMap.put(category, location);
+		}
+	}
+
+	private void loadConnectionCategoryLocationBendpoint(
+			ConnectionElementLocation location, Element locationElement, LoadContext context) {
+
+		NodeList nodeList = locationElement.getChildNodes();
+
+		int index = 0;
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			if (!nodeList.item(i).getNodeName().equals("bendpoint")) {
+				continue;
+			}
+			Element bendPointElement = (Element) nodeList.item(i);
+
+			Bendpoint bendpoint = new Bendpoint(
+					this.getIntValue(bendPointElement, "x"), 
+					this.getIntValue(bendPointElement,"y"));
+
+			bendpoint.setRelative(this.getBooleanValue(bendPointElement,
+					"relative"));
+
+			location.addBendpoint(index++, bendpoint);
 		}
 	}
 }

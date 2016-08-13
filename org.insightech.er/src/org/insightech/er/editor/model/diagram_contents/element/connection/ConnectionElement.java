@@ -222,6 +222,22 @@ public abstract class ConnectionElement extends AbstractModel implements
 		categoryLocationMap.remove(category);
 	}
 
+	public ConnectionElementLocation getLocation() {
+		return location;
+	}
+
+	public void setLocation(ConnectionElementLocation location) {
+		this.location = location;
+	}
+
+	public Map<Category, ConnectionElementLocation> getCategoryLocationMap() {
+		return categoryLocationMap;
+	}
+
+	public void setCategoryLocationMap(Map<Category, ConnectionElementLocation> categoryLocationMap) {
+		this.categoryLocationMap = categoryLocationMap;
+	}
+
 	private Category getCurrentCategory() {
 
 		return source != null ? source.getCurrentCategory() : 
