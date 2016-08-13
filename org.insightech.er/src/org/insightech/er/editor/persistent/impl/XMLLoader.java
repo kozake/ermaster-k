@@ -524,7 +524,7 @@ public class XMLLoader {
 		this.loadTriggerSet(diagramContents.getTriggerSet(), parent);
 
 		this.loadSettings(settings, parent, context);
-		this.locadCategoryLocation(parent, context);
+		this.loadCategoryLocation(parent, context);
 
 		context.resolve();
 	}
@@ -1967,7 +1967,7 @@ public class XMLLoader {
 		diagram.setDefaultColor(rgb[0], rgb[1], rgb[2]);
 	}
 
-	private void locadCategoryLocation(Element parent, LoadContext context) {
+	private void loadCategoryLocation(Element parent, LoadContext context) {
 		Element element = this.getElement(parent, "contents");
 
 		NodeList nodeList = element.getChildNodes();
@@ -1986,12 +1986,13 @@ public class XMLLoader {
 					continue;
 				}
 				Element mapElement = (Element) nodeMapList.item(0);
-				locadCategoryLocation(nodeElement, mapElement, context);
+				loadCategoryLocation(nodeElement, mapElement, context);
 			}
+			this.loadConnectionsCategoryLocation(node, context);
 		}
 	}
 
-	private void locadCategoryLocation(NodeElement nodeElement, Element mapElement, LoadContext context) {
+	private void loadCategoryLocation(NodeElement nodeElement, Element mapElement, LoadContext context) {
 		NodeList nodeList = mapElement.getChildNodes();
 		
 		Map<Category, Location> categoryLocationMap = nodeElement.getCategoryLocationMap();
