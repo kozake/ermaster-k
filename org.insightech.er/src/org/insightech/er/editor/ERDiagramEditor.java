@@ -126,8 +126,6 @@ public class ERDiagramEditor extends GraphicalEditorWithPalette {
 
 	private ERDiagramOutlinePage outlinePage;
 
-	private MenuManager outlineMenuMgr;
-
 	private ERDiagramActionBarContributor actionBarContributor;
 
 	private ERDiagramPaletteRoot palette;
@@ -228,11 +226,6 @@ public class ERDiagramEditor extends GraphicalEditorWithPalette {
 		viewer.setContextMenu(menuMgr);
 
 		viewer.setContents(diagram);
-
-		this.outlineMenuMgr = new ERDiagramOutlinePopupMenuManager(
-				this.diagram, this.getActionRegistry(),
-				this.outlinePage.getOutlineActionRegistory(),
-				this.outlinePage.getViewer());
 	}
 
 	/**
@@ -265,8 +258,13 @@ public class ERDiagramEditor extends GraphicalEditorWithPalette {
 	 * </pre>
 	 */
 	public void changeCategory() {
+		MenuManager outlineMenuMgr = new ERDiagramOutlinePopupMenuManager(
+				this.diagram, this.getActionRegistry(),
+				this.outlinePage.getOutlineActionRegistory(),
+				this.outlinePage.getViewer());
+
 		this.outlinePage.setCategory(this.getEditDomain(),
-				this.getGraphicalViewer(), this.outlineMenuMgr,
+				this.getGraphicalViewer(), outlineMenuMgr,
 				this.getActionRegistry());
 
 		this.getSelectionSynchronizer().addViewer(this.outlinePage.getViewer());
