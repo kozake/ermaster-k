@@ -1191,6 +1191,58 @@ public class PersistentXmlImpl extends Persistent {
 					.append(context.nodeElementMap.get(nodeElement))
 					.append("</node_element>\n");
 		}
+		
+		Map<NodeElement, Location> nodeLocationMap = category.getNodeLocationMap();
+		if (!nodeLocationMap.isEmpty()) {
+			xml.append("\t<node_location_map>\n");
+			for (NodeElement nodeElement : nodeLocationMap.keySet()) {
+				Location location = nodeLocationMap.get(nodeElement);
+				xml.append("\t\t<node_location_set>\n");
+
+				xml.append("\t\t\t<node_element>")
+				.append(context.nodeElementMap.get(nodeElement))
+				.append("</node_element>\n");
+
+				xml.append("\t\t\t<location>")
+				.append("<x>").append(location.x).append("</x>")
+				.append("<y>").append(location.y).append("</y>")
+				.append("<height>").append(location.height).append("</height>")
+				.append("<width>").append(location.width).append("</width>")
+				.append("</location>\n");
+				xml.append("\t\t</node_location_set>\n");
+			}
+			xml.append("\t</node_location_map>\n");
+		}
+
+		Map<ConnectionElement, ConnectionElementLocation> connectionLocationMap = category.getConnectionLocationMap();
+		if (!connectionLocationMap.isEmpty()) {
+			xml.append("\t<connection_location_map>\n");
+			for (ConnectionElement connectionElement : connectionLocationMap.keySet()) {
+				xml.append("\t\t<connection_location_set>\n");
+				ConnectionElementLocation categoryLocation = connectionLocationMap.get(connectionElement);
+
+				xml.append("\t\t\t<connection>")
+				.append(context.connectionMap.get(connectionElement))
+				.append("</connection>\n");
+
+				xml.append("\t\t\t<location>\n");
+				xml.append("\t\t\t\t<source_xp>").append(categoryLocation.getSourceXp())
+				.append("</source_xp>")
+				.append("<source_yp>").append(categoryLocation.getSourceYp())
+				.append("</source_yp>")
+				.append("<target_xp>").append(categoryLocation.getTargetXp())
+				.append("</target_xp>")
+				.append("<target_yp>").append(categoryLocation.getTargetYp())
+				.append("</target_yp>\n");
+
+				for (Bendpoint bendpoint : categoryLocation.getBendpoints()) {
+					xml.append(tab(tab(tab(tab(this.createXML(bendpoint))))));
+				}
+				xml.append("\t\t\t</location>\n");
+				xml.append("\t\t</connection_location_set>\n");
+			}
+			xml.append("\t</connection_location_map>\n");
+		}
 
 		xml.append("</category>\n");
 
@@ -1258,27 +1310,6 @@ public class PersistentXmlImpl extends Persistent {
 		xml.append("<y>").append(location.y).append("</y>\n");
 		xml.append(this.createXMLColor(nodeElement.getColor()));
 
-		Map<Category, Location> categoryLocationMap = nodeElement.getCategoryLocationMap();
-		if (!categoryLocationMap.isEmpty()) {
-			xml.append("<category_location_map>\n");
-			for (Category category : categoryLocationMap.keySet()) {
-				xml.append("\t<category_location_set>\n");
-				Location categoryLocation = categoryLocationMap.get(category);
-
-				xml.append("\t\t<category>")
-				.append(context.nodeElementMap.get(category))
-				.append("</category>\n");
-
-				xml.append("\t\t<location>")
-				.append("<x>").append(categoryLocation.x).append("</x>")
-				.append("<y>").append(categoryLocation.y).append("</y>")
-				.append("<height>").append(categoryLocation.height).append("</height>")
-				.append("<width>").append(categoryLocation.width).append("</width>")
-				.append("</location>\n");
-				xml.append("\t</category_location_set>\n");
-			}
-			xml.append("</category_location_map>\n");
-		}
 		List<ConnectionElement> incomings = nodeElement.getIncomings();
 		xml.append(this.createXMLConnections(incomings, context));
 
@@ -1611,37 +1642,6 @@ public class PersistentXmlImpl extends Persistent {
 			xml.append(tab(this.createXML(bendpoint)));
 		}
 		
-		Map<Category, ConnectionElementLocation> categoryLocationMap = 
-				connection.getCategoryLocationMap();
-		if (!categoryLocationMap.isEmpty()) {
-			xml.append("\t<category_location_map>\n");
-			for (Category category : categoryLocationMap.keySet()) {
-				xml.append("\t\t<category_location_set>\n");
-				ConnectionElementLocation categoryLocation = categoryLocationMap.get(category);
-
-				xml.append("\t\t\t<category>")
-				.append(context.nodeElementMap.get(category))
-				.append("</category>\n");
-
-				xml.append("\t\t\t<location>\n");
-				xml.append("\t\t\t\t<source_xp>").append(categoryLocation.getSourceXp())
-				.append("</source_xp>")
-				.append("<source_yp>").append(categoryLocation.getSourceYp())
-				.append("</source_yp>")
-				.append("<target_xp>").append(categoryLocation.getTargetXp())
-				.append("</target_xp>")
-				.append("<target_yp>").append(categoryLocation.getTargetYp())
-				.append("</target_yp>\n");
-
-				for (Bendpoint bendpoint : categoryLocation.getBendpoints()) {
-					xml.append(tab(tab(tab(tab(this.createXML(bendpoint))))));
-				}
-				xml.append("\t\t\t</location>\n");
-				xml.append("\t\t</category_location_set>\n");
-			}
-			xml.append("\t</category_location_map>\n");
-		}
-
 		xml.append(tab(this.createXMLColor(connection.getColor())));
 
 		return xml.toString();

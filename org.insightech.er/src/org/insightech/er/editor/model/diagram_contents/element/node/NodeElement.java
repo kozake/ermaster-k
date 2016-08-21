@@ -2,9 +2,7 @@ package org.insightech.er.editor.model.diagram_contents.element.node;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.insightech.er.editor.model.ERDiagram;
 import org.insightech.er.editor.model.ObjectModel;
@@ -18,8 +16,6 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 
 	private Location location;
 	
-	private Map<Category, Location> categoryLocationMap = new HashMap<Category, Location>();
-
 	private Location actualLocation;
 
 	private List<ConnectionElement> incomings = new ArrayList<ConnectionElement>();
@@ -63,7 +59,7 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 	public void setLocation(Location location) {
 		Category category = getCurrentCategory();
 		if (category != null && category.contains(this)) {
-			categoryLocationMap.put(category, location);
+			category.putNodeLocation(this, location);
 		} else {
 			this.location = location;
 		}
@@ -76,7 +72,7 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 
 	public Location getLocation(Category category) {
 		if (category != null && category.contains(this)) {
-			Location location = categoryLocationMap.get(category);
+			Location location = category.getNodeLocation(this);
 			if (location!= null) {
 				return location;
 			}
@@ -188,7 +184,7 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 	
 
 	public void addCategory(Category category) {
-		categoryLocationMap.put(category, getLocation());
+		category.putNodeLocation(this, getLocation());
 		for (ConnectionElement conn : incomings) {
 			conn.addCategory(category);
 		}
@@ -198,7 +194,7 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 	}
 	
 	public void removeCategory(Category category) {
-		categoryLocationMap.remove(category);
+		category.removeNodeLocation(this);
 		for (ConnectionElement conn : incomings) {
 			conn.removeCategory(category);
 		}
@@ -207,10 +203,6 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 		}
 	}
 	
-	public Map<Category, Location> getCategoryLocationMap() {
-		return categoryLocationMap;
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */

@@ -1,10 +1,14 @@
 package org.insightech.er.editor.model.diagram_contents.element.node.category;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.insightech.er.editor.controller.editpart.element.node.IResizable;
 import org.insightech.er.editor.model.ERDiagram;
+import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElement;
+import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElementLocation;
 import org.insightech.er.editor.model.diagram_contents.element.node.Location;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeElement;
 import org.insightech.er.editor.model.diagram_contents.element.node.table.ERTable;
@@ -22,10 +26,16 @@ public class Category extends NodeElement implements IResizable,
 
 	private List<NodeElement> nodeElementList;
 
+	private Map<NodeElement, Location> nodeLocationMap;
+
+	private Map<ConnectionElement, ConnectionElementLocation> connectionLocationMap;
+
 	private String name;
 
 	public Category() {
 		this.nodeElementList = new ArrayList<NodeElement>();
+		this.nodeLocationMap = new HashMap<NodeElement, Location>();
+		this.connectionLocationMap = new HashMap<ConnectionElement, ConnectionElementLocation>();
 	}
 
 	public void setContents(List<NodeElement> contetns) {
@@ -219,6 +229,38 @@ public class Category extends NodeElement implements IResizable,
 		return location;
 	}
 	
+	public Location getNodeLocation(NodeElement nodeElement) {
+		return this.nodeLocationMap.get(nodeElement);
+	}
+	
+	public void putNodeLocation(NodeElement nodeElement, Location location) {
+		this.nodeLocationMap.put(nodeElement, location);
+	}
+
+	public void removeNodeLocation(NodeElement nodeElement) {
+		this.nodeLocationMap.remove(nodeElement);
+	}
+	
+	public Map<NodeElement, Location> getNodeLocationMap() {
+		return this.nodeLocationMap;
+	}
+
+	public ConnectionElementLocation getConnectionElementLocation(ConnectionElement connectionElement) {
+		return this.connectionLocationMap.get(connectionElement);
+	}
+	
+	public void putConnectionElementLocation(ConnectionElement connectionElement, ConnectionElementLocation location) {
+		this.connectionLocationMap.put(connectionElement, location);
+	}
+
+	public void removeConnectionElementLocation(ConnectionElement connectionElement) {
+		this.connectionLocationMap.remove(connectionElement);
+	}
+	
+	public Map<ConnectionElement, ConnectionElementLocation> getConnectionLocationMap() {
+		return this.connectionLocationMap;
+	}
+
 	public int compareTo(Category other) {
 		int compareTo = 0;
 

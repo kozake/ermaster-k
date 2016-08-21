@@ -525,7 +525,6 @@ public class XMLLoader {
 		this.loadTriggerSet(diagramContents.getTriggerSet(), parent);
 
 		this.loadSettings(settings, parent, context);
-		this.loadCategoryLocation(parent, context);
 
 		context.resolve();
 	}
@@ -1372,6 +1371,22 @@ public class XMLLoader {
 			if (isSelected) {
 				selectedCategories.add(category);
 			}
+
+			NodeList nodeLocationMapList = categoryElement.getElementsByTagName("node_location_map");
+			if (nodeLocationMapList.getLength() > 0 &&
+				nodeLocationMapList.item(0).getNodeType() == Node.ELEMENT_NODE) {
+
+				Element nodeLocationMapElement = (Element) nodeLocationMapList.item(0);
+				loadNodeLocationMap(category, nodeLocationMapElement, context);
+			}
+
+			NodeList connectionLocationMapList = categoryElement.getElementsByTagName("connection_location_map");
+			if (connectionLocationMapList.getLength() > 0 &&
+					connectionLocationMapList.item(0).getNodeType() == Node.ELEMENT_NODE) {
+
+				Element connectionLocationMapElement = (Element) connectionLocationMapList.item(0);
+				loadConnectionLocationMap(category, connectionLocationMapElement, context);
+			}
 		}
 
 		categorySetting.setSelectedCategories(selectedCategories);
@@ -1972,41 +1987,20 @@ public class XMLLoader {
 		diagram.setDefaultColor(rgb[0], rgb[1], rgb[2]);
 	}
 
-	private void loadCategoryLocation(Element parent, LoadContext context) {
-		Element element = this.getElement(parent, "contents");
-
-		NodeList nodeList = element.getChildNodes();
-
-		for (int i = 0; i < nodeList.getLength(); i++) {
-			if (nodeList.item(i).getNodeType() != Node.ELEMENT_NODE) {
-				continue;
-			}
-			Element node = (Element) nodeList.item(i);
-			String id = this.getStringValue(node, "id");
-			NodeElement nodeElement = context.nodeElementMap.get(id);
-
-			NodeList nodeMapList = node.getElementsByTagName("category_location_map");
-			if (nodeMapList.getLength() > 0) {
-				if (nodeMapList.item(0).getNodeType() != Node.ELEMENT_NODE) {
-					continue;
-				}
-				Element mapElement = (Element) nodeMapList.item(0);
-				loadCategoryLocation(nodeElement, mapElement, context);
-			}
-			this.loadConnectionsCategoryLocation(node, context);
-		}
-	}
-
-	private void loadCategoryLocation(NodeElement nodeElement, Element mapElement, LoadContext context) {
-		NodeList nodeList = mapElement.getChildNodes();
+	private void loadNodeLocationMap(Category category, Element nodeLocationMapElement, LoadContext context) {
+		NodeList nodeList = nodeLocationMapElement.getChildNodes();
 		
-		Map<Category, Location> categoryLocationMap = nodeElement.getCategoryLocationMap();
+		Map<NodeElement, Location> nodeLocationMap = category.getNodeLocationMap();
 
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			if (nodeList.item(i).getNodeType() != Node.ELEMENT_NODE) {
 				continue;
 			}
 			Element node = (Element) nodeList.item(i);
+
+			String id = this.getStringValue(node, "node_element");
+			NodeElement nodeElement = (NodeElement) context.nodeElementMap.get(id);
+			
 
 			NodeList locationNodeList = node.getElementsByTagName("location");
 			if (locationNodeList.getLength() == 0 | locationNodeList.item(0).getNodeType() != Node.ELEMENT_NODE) {
@@ -2014,62 +2008,29 @@ public class XMLLoader {
 			}
 			Element locationElement = (Element) locationNodeList.item(0);
 
-			String id = this.getStringValue(node, "category");
-			Category category = (Category) context.nodeElementMap.get(id);
-			
 			int x = this.getIntValue(locationElement, "x");
 			int y = this.getIntValue(locationElement, "y");
 			int width = this.getIntValue(locationElement, "width");
 			int height = this.getIntValue(locationElement, "height");
 			Location location = new Location(x, y, width, height);
 			
-			categoryLocationMap.put(category, location);
+			nodeLocationMap.put(nodeElement, location);
 		}
 	}
 
-	private void loadConnectionsCategoryLocation(Element parent, LoadContext context) {
-		Element connectionsElement = this.getElement(parent, "connections");
-
-		if (connectionsElement != null) {
-			NodeList nodeList = connectionsElement.getChildNodes();
-
-			for (int i = 0; i < nodeList.getLength(); i++) {
-				if (nodeList.item(i).getNodeType() != Node.ELEMENT_NODE) {
-					continue;
-				}
-
-				Element connectionElement = (Element) nodeList.item(i);
-				String id = this.getStringValue(connectionsElement, "id");
-				ConnectionElement connection = context.connectionMap.get(id);
-
-				NodeList nodeMapList = connectionElement.getElementsByTagName("category_location_map");
-				
-				if (nodeMapList.getLength() > 0) {
-					if (nodeMapList.item(0).getNodeType() != Node.ELEMENT_NODE) {
-						continue;
-					}
-
-					Element mapElement = (Element) nodeMapList.item(0);
-
-					loadConnectionCategoryLocation(connection, mapElement, context);
-				}
-			}
-		}
-	}
-
-	private void loadConnectionCategoryLocation(ConnectionElement connection, Element mapElement, LoadContext context) {
+	private void loadConnectionLocationMap(Category category, Element connectionLocationMapElement, LoadContext context) {
 		
-		Map<Category, ConnectionElementLocation> categoryLocationMap = connection.getCategoryLocationMap();
+		Map<ConnectionElement, ConnectionElementLocation> connectionLocationMap = category.getConnectionLocationMap();
 
-		NodeList nodeList = mapElement.getChildNodes();
+		NodeList nodeList = connectionLocationMapElement.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			if (nodeList.item(i).getNodeType() != Node.ELEMENT_NODE) {
 				continue;
 			}
 			Element mapSetElement = (Element) nodeList.item(i);
 
-			String id = this.getStringValue(mapSetElement, "category");
-			Category category = (Category) context.nodeElementMap.get(id);
+			String id = this.getStringValue(mapSetElement, "connection");
+			ConnectionElement connection = context.connectionMap.get(id);
 
 			NodeList locationNodeList = mapSetElement.getElementsByTagName("location");
 			if (locationNodeList.getLength() == 0 | locationNodeList.item(0).getNodeType() != Node.ELEMENT_NODE) {
@@ -2085,7 +2046,7 @@ public class XMLLoader {
 
 			loadConnectionCategoryLocationBendpoint(location, locationElement, context);
 			
-			categoryLocationMap.put(category, location);
+			connectionLocationMap.put(connection, location);
 		}
 	}
 

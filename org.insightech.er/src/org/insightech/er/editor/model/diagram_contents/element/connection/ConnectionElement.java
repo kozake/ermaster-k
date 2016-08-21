@@ -1,8 +1,6 @@
 package org.insightech.er.editor.model.diagram_contents.element.connection;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.insightech.er.editor.model.AbstractModel;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeElement;
@@ -19,8 +17,6 @@ public abstract class ConnectionElement extends AbstractModel implements
 	protected NodeElement target;
 	
 	private ConnectionElementLocation location = new ConnectionElementLocation();
-
-	private Map<Category, ConnectionElementLocation> categoryLocationMap = new HashMap<Category, ConnectionElementLocation>();
 
 	private int[] color;
 
@@ -94,8 +90,11 @@ public abstract class ConnectionElement extends AbstractModel implements
 		if (this.source != null) {
 			this.source.addOutgoing(this);
 		}
-		removeCategory(getCurrentCategory());
-		addCategory(getCurrentCategory());
+		Category currentCategory = getCurrentCategory();
+		if (currentCategory != null) {
+			removeCategory(currentCategory);
+			addCategory(currentCategory);
+		}
 	}
 
 	public void setSourceAndTarget(NodeElement source, NodeElement target) {
@@ -113,8 +112,11 @@ public abstract class ConnectionElement extends AbstractModel implements
 		if (this.target != null) {
 			this.target.addIncoming(this);
 		}
-		removeCategory(getCurrentCategory());
-		addCategory(getCurrentCategory());
+		Category currentCategory = getCurrentCategory();
+		if (currentCategory != null) {
+			removeCategory(currentCategory);
+			addCategory(currentCategory);
+		}
 	}
 
 	public NodeElement getTarget() {
@@ -210,16 +212,16 @@ public abstract class ConnectionElement extends AbstractModel implements
 
 	public void addCategory(Category category) {
 		if (category != null
-				&& !categoryLocationMap.containsKey(category)
+				&& !category.getConnectionLocationMap().containsKey(this)
 			    && category.contains(this.source)
 			    && category.contains(this.target)) {
 
-			categoryLocationMap.put(category, location.clone());
+			category.putConnectionElementLocation(this, location.clone());
 		}
 	}
 	
 	public void removeCategory(Category category) {
-		categoryLocationMap.remove(category);
+		category.removeConnectionElementLocation(this);
 	}
 
 	public ConnectionElementLocation getLocation() {
@@ -228,14 +230,6 @@ public abstract class ConnectionElement extends AbstractModel implements
 
 	public void setLocation(ConnectionElementLocation location) {
 		this.location = location;
-	}
-
-	public Map<Category, ConnectionElementLocation> getCategoryLocationMap() {
-		return categoryLocationMap;
-	}
-
-	public void setCategoryLocationMap(Map<Category, ConnectionElementLocation> categoryLocationMap) {
-		this.categoryLocationMap = categoryLocationMap;
 	}
 
 	private Category getCurrentCategory() {
@@ -247,12 +241,16 @@ public abstract class ConnectionElement extends AbstractModel implements
 	private ConnectionElementLocation getCurrentCategoryLocation() {
 
 		Category currentCategory = getCurrentCategory();
-		if (currentCategory != null && categoryLocationMap.get(currentCategory) == null) {
+		if (currentCategory != null && !currentCategory.getConnectionLocationMap().containsKey(this)) {
 			addCategory(currentCategory);
 		}
+		
+		ConnectionElementLocation currentLocation = null;
+		if (currentCategory != null) {
+			currentLocation = currentCategory.getConnectionElementLocation(this);
+		}
 
-		return categoryLocationMap.containsKey(currentCategory) ?
-				categoryLocationMap.get(currentCategory) : location;
+		return currentLocation != null ? currentLocation : location;
 	}
 
 	@Override
@@ -265,11 +263,6 @@ public abstract class ConnectionElement extends AbstractModel implements
 					this.color[2] };
 		}
 
-		clone.categoryLocationMap = new HashMap<Category, ConnectionElementLocation>();
-		for (Category key : categoryLocationMap.keySet()) {
-			clone.categoryLocationMap.put(key, categoryLocationMap.get(key).clone());
-		}
-		
 		return clone;
 	}
 }
