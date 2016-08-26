@@ -506,6 +506,7 @@ public class CategoryManageDialog extends AbstractDialog {
 			}
 
 			targetCategory.setContents(selectedNodeElementList);
+			targetCategory.pack();
 		}
 
 		List<Category> selectedCategories = new ArrayList<Category>();

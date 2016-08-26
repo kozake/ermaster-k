@@ -52,48 +52,54 @@ public class Category extends NodeElement implements IResizable,
 		this.nodeElementList = contetns;
 
 		if (this.getWidth() == 0) {
-
-			int categoryX = 0;
-			int categoryY = 0;
-
-			int categoryWidth = 300;
-			int categoryHeight = 400;
-
-			if (!nodeElementList.isEmpty()) {
-				categoryX = nodeElementList.get(0).getX();
-				categoryY = nodeElementList.get(0).getY();
-				categoryWidth = nodeElementList.get(0).getWidth();
-				categoryHeight = nodeElementList.get(0).getHeight();
-
-				for (NodeElement nodeElement : nodeElementList) {
-					int x = nodeElement.getX();
-					int y = nodeElement.getY();
-					int width = nodeElement.getWidth();
-					int height = nodeElement.getHeight();
-
-					if (categoryX > x - MARGIN) {
-						width += categoryX - x + MARGIN;
-						categoryX = x - MARGIN;
-					}
-					if (categoryY > y - MARGIN) {
-						height += categoryY - y + MARGIN;
-						categoryY = y - MARGIN;
-					}
-
-					if (x - categoryX + width + MARGIN > categoryWidth) {
-						categoryWidth = x - categoryX + width + MARGIN;
-					}
-
-					if (y - categoryY + height + MARGIN > categoryHeight) {
-						categoryHeight = y - categoryY + height + MARGIN;
-					}
-
-				}
-			}
-
-			this.setLocation(new Location(categoryX, categoryY, categoryWidth,
-					categoryHeight));
+			pack();
 		}
+	}
+	
+	public void pack() {
+		
+		int categoryX = 0;
+		int categoryY = 0;
+
+		int categoryWidth = 300;
+		int categoryHeight = 400;
+
+		if (!nodeElementList.isEmpty()) {
+			Location nodeElementLocation = nodeElementList.get(0).getLocationInAll();
+			categoryX = nodeElementLocation.x;
+			categoryY = nodeElementLocation.y;
+			categoryWidth = nodeElementLocation.width;
+			categoryHeight = nodeElementLocation.height;
+
+			for (NodeElement nodeElement : nodeElementList) {
+				nodeElementLocation = nodeElement.getLocationInAll();
+				int x = nodeElementLocation.x;
+				int y = nodeElementLocation.y;
+				int width = nodeElementLocation.width;
+				int height = nodeElementLocation.height;
+
+				if (categoryX > x - MARGIN) {
+					width += categoryX - x + MARGIN;
+					categoryX = x - MARGIN;
+				}
+				if (categoryY > y - MARGIN) {
+					height += categoryY - y + MARGIN;
+					categoryY = y - MARGIN;
+				}
+
+				if (x - categoryX + width + MARGIN > categoryWidth) {
+					categoryWidth = x - categoryX + width + MARGIN;
+				}
+
+				if (y - categoryY + height + MARGIN > categoryHeight) {
+					categoryHeight = y - categoryY + height + MARGIN;
+				}
+
+			}
+		}
+
+		this.setLocation(new Location(categoryX, categoryY, categoryWidth,
+				categoryHeight));
 	}
 
 	public boolean contains(NodeElement nodeElement) {
