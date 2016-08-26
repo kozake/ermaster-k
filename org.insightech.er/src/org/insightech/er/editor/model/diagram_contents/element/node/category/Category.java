@@ -39,6 +39,16 @@ public class Category extends NodeElement implements IResizable,
 	}
 
 	public void setContents(List<NodeElement> contetns) {
+		for (NodeElement content : nodeElementList) {
+			if (!contetns.contains(content)) {
+				content.removeCategory(this);
+			}
+		}
+		for (NodeElement content : contetns) {
+			if (!nodeElementList.contains(content)) {
+				content.addCategory(this);
+			}
+		}
 		this.nodeElementList = contetns;
 
 		if (this.getWidth() == 0) {
@@ -83,9 +93,6 @@ public class Category extends NodeElement implements IResizable,
 
 			this.setLocation(new Location(categoryX, categoryY, categoryWidth,
 					categoryHeight));
-		}
-		for (NodeElement content : contetns) {
-			content.addCategory(this);
 		}
 	}
 
