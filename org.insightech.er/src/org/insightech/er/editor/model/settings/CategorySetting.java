@@ -78,6 +78,19 @@ public class CategorySetting implements Serializable, Cloneable {
 		return selectedCategories;
 	}
 
+	public void replaceCategory(Category category, Category replace) {
+		if (allCategories.contains(category)) {
+			int index = allCategories.indexOf(category);
+			allCategories.remove(category);
+			allCategories.add(index, replace);
+		}
+		if (selectedCategories.contains(category)) {
+			int index = selectedCategories.indexOf(category);
+			selectedCategories.remove(category);
+			selectedCategories.add(index, replace);
+		}
+	}
+
 	public Object clone(Map<Category, Category> categoryCloneMap) {
 		try {
 			CategorySetting clone = (CategorySetting) super.clone();

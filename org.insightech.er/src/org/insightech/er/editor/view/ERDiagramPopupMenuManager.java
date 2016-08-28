@@ -11,9 +11,12 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.insightech.er.ResourceString;
+import org.insightech.er.editor.ERDiagramEditor;
 import org.insightech.er.editor.model.ERDiagram;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 import org.insightech.er.editor.model.settings.CategorySetting;
 import org.insightech.er.editor.model.settings.Settings;
+import org.insightech.er.editor.view.action.category.CategoryAddRemoveAction;
 import org.insightech.er.editor.view.action.category.CategoryManageAction;
 import org.insightech.er.editor.view.action.category.ChangeFreeLayoutAction;
 import org.insightech.er.editor.view.action.category.ChangeShowReferredTablesAction;
@@ -60,7 +63,9 @@ public class ERDiagramPopupMenuManager extends MenuManager {
 	private ActionRegistry actionRegistry;
 
 	public ERDiagramPopupMenuManager(ActionRegistry actionRegistry,
-			final ERDiagram diagram) {
+			final ERDiagram diagram,
+			final ERDiagramEditor diagramEditor) {
+		
 		ISharedImages sharedImages = PlatformUI.getWorkbench()
 				.getSharedImages();
 
@@ -213,6 +218,9 @@ public class ERDiagramPopupMenuManager extends MenuManager {
 		categoryMenu.add(this.getAction(CategoryManageAction.ID));
 		// categoryMenu.add(changeFreeLayoutAction);
 		categoryMenu.add(changeShowReferredTablesAction);
+		final MenuManager categoryAddRemoveMenu = new MenuManager(
+				ResourceString.getResourceString("label.category.add.remove"));
+		categoryMenu.add(categoryAddRemoveMenu);
 
 		this.add(categoryMenu);
 
@@ -309,6 +317,12 @@ public class ERDiagramPopupMenuManager extends MenuManager {
 						.isFreeLayout());
 				changeShowReferredTablesAction.setChecked(categorySettings
 						.isShowReferredTables());
+				
+				categoryAddRemoveMenu.setVisible(diagram.getCurrentCategory() == null);
+				categoryAddRemoveMenu.removeAll();
+				for (Category category : diagram.getDiagramContents().getSettings().getCategorySetting().getAllCategories()) {
+					categoryAddRemoveMenu.add(new CategoryAddRemoveAction(diagramEditor, category));
+				}
 			}
 
 		});

@@ -289,6 +289,15 @@ public class Category extends NodeElement implements IResizable,
 	@Override
 	public Category clone() {
 		Category clone = (Category) super.clone();
+		
+		clone.nodeElementList = new ArrayList<NodeElement>();
+		clone.nodeElementList.addAll(this.nodeElementList);
+
+		clone.nodeLocationMap = new HashMap<NodeElement, Location>();
+		clone.nodeLocationMap.putAll(this.nodeLocationMap);
+
+		clone.connectionLocationMap = new HashMap<ConnectionElement, ConnectionElementLocation>();
+		clone.connectionLocationMap.putAll(this.connectionLocationMap);
 
 		return clone;
 	}

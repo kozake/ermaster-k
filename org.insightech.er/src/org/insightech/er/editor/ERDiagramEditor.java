@@ -218,7 +218,7 @@ public class ERDiagramEditor extends GraphicalEditorWithPalette {
 		viewer.setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED, true);
 
 		MenuManager menuMgr = new ERDiagramPopupMenuManager(
-				this.getActionRegistry(), this.diagram);
+				this.getActionRegistry(), this.diagram, this);
 
 		this.extensionLoader.addERDiagramPopupMenu(menuMgr,
 				this.getActionRegistry());
