@@ -14,7 +14,6 @@ import org.insightech.er.editor.model.diagram_contents.element.connection.Connec
 import org.insightech.er.editor.model.diagram_contents.element.node.Location;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeElement;
 import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
-import org.insightech.er.editor.model.diagram_contents.element.node.model_properties.ModelProperties;
 
 public class MoveCategoryCommand extends MoveElementCommand {
 
@@ -32,8 +31,6 @@ public class MoveCategoryCommand extends MoveElementCommand {
 
 	private Map<ConnectionElement, List<Bendpoint>> bendpointListMap;
 
-	private List<NodeElement> newlyAddedNodeElementList;
-
 	public MoveCategoryCommand(ERDiagram diagram, int x, int y, int width,
 			int height, Category category, List<Category> otherCategories,
 			boolean move) {
@@ -43,7 +40,6 @@ public class MoveCategoryCommand extends MoveElementCommand {
 				category.getContents());
 		this.category = category;
 		this.move = move;
-		this.newlyAddedNodeElementList = new ArrayList<NodeElement>();
 
 		if (!this.move) {
 			for (NodeElement nodeElement : this.nodeElementList) {
@@ -119,8 +115,6 @@ public class MoveCategoryCommand extends MoveElementCommand {
 				}
 			}
 
-		} else {
-			this.addNodeToCategory();
 		}
 
 		super.doExecute();
@@ -148,10 +142,6 @@ public class MoveCategoryCommand extends MoveElementCommand {
 				connectionElement.refreshBendpoint();
 			}
 
-		} else {
-			for (NodeElement nodeElement : this.newlyAddedNodeElementList) {
-				this.category.getContents().remove(nodeElement);
-			}
 		}
 
 		super.doUndo();
@@ -195,31 +185,6 @@ public class MoveCategoryCommand extends MoveElementCommand {
 			for (int index = 0; index < oldBendpointList.size(); index++) {
 				connectionElement.replaceBendpoint(index,
 						oldBendpointList.get(index));
-			}
-		}
-	}
-
-	private void addNodeToCategory() {
-		for (NodeElement nodeElement : this.diagram.getDiagramContents()
-				.getContents().getNodeElementList()) {
-			if (nodeElement instanceof ModelProperties) {
-				continue;
-			}
-
-			if (this.nodeElementList.contains(nodeElement)) {
-				continue;
-			}
-
-			Location actualLocation = nodeElement.getActualLocation();
-
-			if (actualLocation.x >= this.x
-					&& actualLocation.y >= this.y
-					&& actualLocation.x + actualLocation.width <= this.x
-							+ this.width
-					&& actualLocation.y + actualLocation.height <= this.y
-							+ this.height) {
-				this.category.getContents().add(nodeElement);
-				this.newlyAddedNodeElementList.add(nodeElement);
 			}
 		}
 	}

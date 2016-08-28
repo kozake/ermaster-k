@@ -1,8 +1,6 @@
 package org.insightech.er.editor.controller.command.diagram_contents.element.node;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -36,13 +34,7 @@ public class MoveElementCommand extends AbstractCommand {
 
 	private Map<Category, Location> newCategoryLocationMap;
 
-	private List<Category> removedCategories;
-
-	private List<Category> addCategories;
-
 	protected ERDiagram diagram;
-
-	private Category currentCategory;
 
 	private Rectangle bounds;
 
@@ -57,12 +49,8 @@ public class MoveElementCommand extends AbstractCommand {
 		this.oldWidth = element.getWidth();
 		this.oldHeight = element.getHeight();
 
-		this.removedCategories = new ArrayList<Category>();
-		this.addCategories = new ArrayList<Category>();
-
 		this.bounds = bounds;
 		this.diagram = diagram;
-		this.currentCategory = diagram.getCurrentCategory();
 
 		this.oldCategoryLocationMap = new HashMap<Category, Location>();
 		this.newCategoryLocationMap = new HashMap<Category, Location>();
@@ -79,21 +67,6 @@ public class MoveElementCommand extends AbstractCommand {
 		for (Category category : diagram.getDiagramContents().getSettings()
 				.getCategorySetting().getSelectedCategories()) {
 			if (category.contains(element)) {
-				if (this.currentCategory == null) {
-					if (elementLocation.x + elementLocation.width < category
-							.getX()
-							|| elementLocation.x > category.getX()
-									+ category.getWidth()
-							|| elementLocation.y + elementLocation.height < category
-									.getY()
-							|| elementLocation.y > category.getY()
-									+ category.getHeight()) {
-
-						this.removedCategories.add(category);
-
-						continue;
-					}
-				}
 
 				Location newCategoryLocation = category
 						.getNewCategoryLocation(elementLocation);
@@ -105,17 +78,6 @@ public class MoveElementCommand extends AbstractCommand {
 							category.getLocation());
 				}
 
-			} else {
-				if (diagram.getCurrentCategory() == null) {
-					if (elementLocation.x >= category.getX()
-							&& elementLocation.x + elementLocation.width <= category
-									.getX() + category.getWidth()
-							&& elementLocation.y >= category.getY()
-							&& elementLocation.y + bounds.height <= category
-									.getY() + category.getHeight()) {
-						this.addCategories.add(category);
-					}
-				}
 			}
 		}
 	}
@@ -146,14 +108,6 @@ public class MoveElementCommand extends AbstractCommand {
 
 		this.element.setLocation(new Location(x, y, width, height));
 
-		for (Category category : this.removedCategories) {
-			category.remove(this.element);
-		}
-
-		for (Category category : this.addCategories) {
-			category.add(this.element);
-		}
-
 		this.element.refreshVisuals();
 	}
 
@@ -168,14 +122,6 @@ public class MoveElementCommand extends AbstractCommand {
 		for (Category category : this.oldCategoryLocationMap.keySet()) {
 			category.setLocation(this.oldCategoryLocationMap.get(category));
 			category.refreshVisuals();
-		}
-
-		for (Category category : this.removedCategories) {
-			category.add(this.element);
-		}
-
-		for (Category category : this.addCategories) {
-			category.remove(this.element);
 		}
 	}
 }
