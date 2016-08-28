@@ -87,7 +87,7 @@ public class MoveElementCommand extends AbstractCommand {
 	 */
 	@Override
 	protected void doExecute() {
-		if (this.bounds != null) {
+		if (this.bounds != null && element.getCurrentCategory() == null) {
 			Location elementLocation = new Location(x, y, bounds.width,
 					bounds.height);
 

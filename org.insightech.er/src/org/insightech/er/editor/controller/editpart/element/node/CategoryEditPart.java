@@ -48,7 +48,7 @@ public class CategoryEditPart extends NodeElementEditPart implements IResizable 
 				NodeElement element = (NodeElement) editPart.getModel();
 
 				if (category.contains((NodeElement) editPart.getModel())) {
-					Location bounds = element.getActualLocation();
+					Location bounds = element.getLocationInAll();
 
 					if (bounds.x < rectangle.x) {
 						rectangle.width += rectangle.x - bounds.x;

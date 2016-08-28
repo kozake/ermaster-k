@@ -16,8 +16,6 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 
 	private Location location;
 	
-	private Location actualLocation;
-
 	private List<ConnectionElement> incomings = new ArrayList<ConnectionElement>();
 
 	private List<ConnectionElement> outgoings = new ArrayList<ConnectionElement>();
@@ -86,14 +84,6 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 
 	private Location getLocationInCurrentCategory() {
 		return getLocation(getCurrentCategory());
-	}
-
-	public Location getActualLocation() {
-		return actualLocation;
-	}
-
-	public void setActualLocation(Location actualLocation) {
-		this.actualLocation = actualLocation;
 	}
 
 	public List<ConnectionElement> getIncomings() {

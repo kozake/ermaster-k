@@ -35,7 +35,6 @@ import org.insightech.er.editor.controller.editpart.element.node.column.ColumnEd
 import org.insightech.er.editor.controller.editpolicy.element.node.NodeElementGraphicalNodeEditPolicy;
 import org.insightech.er.editor.model.ViewableModel;
 import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElement;
-import org.insightech.er.editor.model.diagram_contents.element.node.Location;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeElement;
 import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 import org.insightech.er.editor.model.diagram_contents.element.node.note.Note;
@@ -172,14 +171,7 @@ public abstract class NodeElementEditPart extends AbstractModelEditPart
 
 		this.getFigure().getUpdateManager().performValidation();
 
-		element.setActualLocation(this.toLocation(this.getFigure().getBounds()));
-
 		this.refreshMovedAnchor();
-	}
-
-	private Location toLocation(Rectangle rectangle) {
-		return new Location(rectangle.x, rectangle.y, rectangle.width,
-				rectangle.height);
 	}
 
 	private void refreshMovedAnchor() {
