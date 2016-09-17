@@ -22,6 +22,7 @@ import org.insightech.er.editor.controller.editpart.element.node.NodeElementEdit
 import org.insightech.er.editor.controller.editpart.element.node.NoteEditPart;
 import org.insightech.er.editor.model.ERDiagram;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeElement;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 import org.insightech.er.editor.view.action.AbstractBaseSelectionAction;
 
 public class HorizontalLineAction extends AbstractBaseSelectionAction {
@@ -107,10 +108,14 @@ public class HorizontalLineAction extends AbstractBaseSelectionAction {
 		for (AbstractModelEditPart editPart : list) {
 			NodeElement nodeElement = (NodeElement) editPart.getModel();
 
+			Category currentCategory = diagram.getCurrentCategory();
 			MoveElementCommand moveCommand = new MoveElementCommand(diagram,
-					editPart.getFigure().getBounds(), start,
-					nodeElement.getY(), nodeElement.getWidth(),
-					nodeElement.getHeight(), nodeElement);
+					editPart.getFigure().getBounds(),
+					start,
+					nodeElement.getY(currentCategory),
+					nodeElement.getWidth(currentCategory),
+					nodeElement.getHeight(currentCategory),
+					nodeElement);
 
 			command.add(moveCommand);
 
@@ -146,9 +151,13 @@ public class HorizontalLineAction extends AbstractBaseSelectionAction {
 				x = start;
 			}
 
+			Category currentCategory = diagram.getCurrentCategory();
 			MoveElementCommand moveCommand = new MoveElementCommand(diagram,
-					editPart.getFigure().getBounds(), x, nodeElement.getY(),
-					nodeElement.getWidth(), nodeElement.getHeight(),
+					editPart.getFigure().getBounds(),
+					x,
+					nodeElement.getY(currentCategory),
+					nodeElement.getWidth(currentCategory),
+					nodeElement.getHeight(currentCategory),
 					nodeElement);
 			command.add(moveCommand);
 

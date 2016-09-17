@@ -119,9 +119,10 @@ public class ImportTableCommand extends AbstractCreateElementCommand {
 			for (NodeElement nodeElement : nodeElementNodeMap.keySet()) {
 				Node node = nodeElementNodeMap.get(nodeElement);
 
-				if (nodeElement.getWidth() == 0) {
-					nodeElement
-							.setLocation(new Location(node.x, node.y, -1, -1));
+				if (nodeElement.getWidth(diagram.getCurrentCategory()) == 0) {
+					nodeElement.setLocation(
+							diagram.getCurrentCategory(),
+							new Location(node.x, node.y, -1, -1));
 				}
 			}
 
@@ -132,8 +133,10 @@ public class ImportTableCommand extends AbstractCreateElementCommand {
 			int y = ORIGINAL_Y;
 
 			for (NodeElement nodeElement : this.nodeElementList) {
-				if (nodeElement.getWidth() == 0) {
-					nodeElement.setLocation(new Location(x, y, -1, -1));
+				if (nodeElement.getWidth(diagram.getCurrentCategory()) == 0) {
+					nodeElement.setLocation(
+							diagram.getCurrentCategory(),
+							new Location(x, y, -1, -1));
 
 					x += DISTANCE_X;
 					if (x > DISTANCE_X * numX) {

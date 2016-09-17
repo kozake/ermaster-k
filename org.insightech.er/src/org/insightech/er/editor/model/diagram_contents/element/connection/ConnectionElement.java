@@ -234,8 +234,8 @@ public abstract class ConnectionElement extends AbstractModel implements
 
 	private Category getCurrentCategory() {
 
-		return source != null ? source.getCurrentCategory() : 
-			   target != null ? target.getCurrentCategory() : null;
+		return source != null ? source.getDiagram().getCurrentCategory() : 
+			   target != null ? target.getDiagram().getCurrentCategory() : null;
 	}
 	
 	private ConnectionElementLocation getCurrentCategoryLocation() {

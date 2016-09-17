@@ -35,6 +35,8 @@ public class MoveElementCommand extends AbstractCommand {
 	private Map<Category, Location> newCategoryLocationMap;
 
 	protected ERDiagram diagram;
+	
+	private Category targetCategory;
 
 	private Rectangle bounds;
 
@@ -44,10 +46,12 @@ public class MoveElementCommand extends AbstractCommand {
 		this.element = element;
 		this.setNewRectangle(x, y, width, height);
 
-		this.oldX = element.getX();
-		this.oldY = element.getY();
-		this.oldWidth = element.getWidth();
-		this.oldHeight = element.getHeight();
+		this.targetCategory = diagram.getCurrentCategory();
+		
+		this.oldX = element.getX(targetCategory);
+		this.oldY = element.getY(targetCategory);
+		this.oldWidth = element.getWidth(targetCategory);
+		this.oldHeight = element.getHeight(targetCategory);
 
 		this.bounds = bounds;
 		this.diagram = diagram;
@@ -87,7 +91,7 @@ public class MoveElementCommand extends AbstractCommand {
 	 */
 	@Override
 	protected void doExecute() {
-		if (this.bounds != null && element.getCurrentCategory() == null) {
+		if (this.bounds != null && targetCategory == null) {
 			Location elementLocation = new Location(x, y, bounds.width,
 					bounds.height);
 
@@ -106,7 +110,7 @@ public class MoveElementCommand extends AbstractCommand {
 			category.refreshVisuals();
 		}
 
-		this.element.setLocation(new Location(x, y, width, height));
+		this.element.setLocation(targetCategory, new Location(x, y, width, height));
 
 		this.element.refreshVisuals();
 	}
@@ -116,7 +120,7 @@ public class MoveElementCommand extends AbstractCommand {
 	 */
 	@Override
 	protected void doUndo() {
-		this.element.setLocation(new Location(oldX, oldY, oldWidth, oldHeight));
+		this.element.setLocation(targetCategory, new Location(oldX, oldY, oldWidth, oldHeight));
 		this.element.refreshVisuals();
 
 		for (Category category : this.oldCategoryLocationMap.keySet()) {

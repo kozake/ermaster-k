@@ -7,6 +7,7 @@ import java.util.List;
 import org.insightech.er.ResourceString;
 import org.insightech.er.editor.model.diagram_contents.element.node.Location;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeElement;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 import org.insightech.er.util.NameValue;
 
 public class ModelProperties extends NodeElement implements Cloneable {
@@ -25,7 +26,7 @@ public class ModelProperties extends NodeElement implements Cloneable {
 		this.creationDate = new Date();
 		this.updatedDate = new Date();
 
-		this.setLocation(new Location(50, 50, -1, -1));
+		this.setLocation(null, new Location(50, 50, -1, -1));
 
 		this.properties = new ArrayList<NameValue>();
 	}
@@ -83,11 +84,11 @@ public class ModelProperties extends NodeElement implements Cloneable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setLocation(Location location) {
+	public void setLocation(Category category, Location location) {
 		location.width = -1;
 		location.height = -1;
 
-		super.setLocation(location);
+		super.setLocation(category, location);
 	}
 
 	/**

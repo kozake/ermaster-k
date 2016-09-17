@@ -100,11 +100,15 @@ public abstract class RemovedNodeElementEditPart extends AbstractModelEditPart
 				.getModel();
 
 		NodeElement nodeElement = removedNodeElement.getNodeElement();
+		Category currentCategory = nodeElement.getDiagram().getCurrentCategory();
 
-		Point point = new Point(nodeElement.getX(), nodeElement.getY());
+		Point point = new Point(
+				nodeElement.getX(currentCategory),
+				nodeElement.getY(currentCategory));
 
-		Dimension dimension = new Dimension(nodeElement.getWidth(),
-				nodeElement.getHeight());
+		Dimension dimension = new Dimension(
+				nodeElement.getWidth(currentCategory),
+				nodeElement.getHeight(currentCategory));
 
 		Dimension minimumSize = this.figure.getMinimumSize();
 		if (dimension.width != -1 && dimension.width < minimumSize.width) {

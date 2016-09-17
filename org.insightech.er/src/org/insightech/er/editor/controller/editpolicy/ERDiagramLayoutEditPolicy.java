@@ -121,8 +121,8 @@ public class ERDiagramLayoutEditPolicy extends XYLayoutEditPolicy {
 
 			List<Command> bendpointMoveCommandList = new ArrayList<Command>();
 
-			int oldX = nodeElement.getX();
-			int oldY = nodeElement.getY();
+			int oldX = nodeElement.getX(diagram.getCurrentCategory());
+			int oldY = nodeElement.getY(diagram.getCurrentCategory());
 
 			int diffX = rectangle.x - oldX;
 			int diffY = rectangle.y - oldY;

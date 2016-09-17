@@ -20,6 +20,7 @@ import org.insightech.er.editor.controller.editpart.element.node.ERTableEditPart
 import org.insightech.er.editor.controller.editpart.element.node.NodeElementEditPart;
 import org.insightech.er.editor.controller.editpart.element.node.NoteEditPart;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeElement;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 import org.insightech.er.editor.view.action.AbstractBaseSelectionAction;
 
 public class VerticalLineAction extends AbstractBaseSelectionAction {
@@ -103,13 +104,17 @@ public class VerticalLineAction extends AbstractBaseSelectionAction {
 	private Command alignToStart(int start, List<NodeElementEditPart> list) {
 		CompoundCommand command = new CompoundCommand();
 
+		Category currentCategory = getDiagram().getCurrentCategory();
 		for (NodeElementEditPart editPart : list) {
 			NodeElement nodeElement = (NodeElement) editPart.getModel();
 
 			MoveElementCommand moveCommand = new MoveElementCommand(this
 					.getDiagram(), editPart.getFigure().getBounds(),
-					nodeElement.getX(), start, nodeElement.getWidth(),
-					nodeElement.getHeight(), nodeElement);
+					nodeElement.getX(currentCategory),
+					start,
+					nodeElement.getWidth(currentCategory),
+					nodeElement.getHeight(currentCategory),
+					nodeElement);
 
 			command.add(moveCommand);
 		}
@@ -131,6 +136,7 @@ public class VerticalLineAction extends AbstractBaseSelectionAction {
 
 		int y = top;
 
+		Category currentCategory = getDiagram().getCurrentCategory();
 		for (NodeElementEditPart editPart : list) {
 			NodeElement nodeElement = (NodeElement) editPart.getModel();
 
@@ -144,8 +150,11 @@ public class VerticalLineAction extends AbstractBaseSelectionAction {
 
 			MoveElementCommand moveCommand = new MoveElementCommand(this
 					.getDiagram(), editPart.getFigure().getBounds(),
-					nodeElement.getX(), y, nodeElement.getWidth(), nodeElement
-							.getHeight(), nodeElement);
+					nodeElement.getX(currentCategory),
+					y,
+					nodeElement.getWidth(currentCategory),
+					nodeElement.getHeight(currentCategory),
+					nodeElement);
 
 			command.add(moveCommand);
 

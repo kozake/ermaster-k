@@ -51,11 +51,15 @@ public class PasteCommand extends AbstractCommand {
 
 		GroupSet groupSet = diagram.getDiagramContents().getGroups();
 
+		Category currentCategory = diagram.getCurrentCategory();
 		// 貼り付け対象に対して処理を繰り返します
 		for (NodeElement nodeElement : nodeElements) {
-			nodeElement.setLocation(new Location(nodeElement.getX() + x,
-					nodeElement.getY() + y, nodeElement.getWidth(), nodeElement
-							.getHeight()));
+			nodeElement.setLocation(currentCategory,
+					new Location(
+							nodeElement.getX(currentCategory) + x,
+							nodeElement.getY(currentCategory) + y,
+							nodeElement.getWidth(currentCategory),
+							nodeElement.getHeight(currentCategory)));
 
 			for (ConnectionElement connection : nodeElement.getIncomings()) {
 				for (Bendpoint bendpoint : connection.getBendpoints()) {

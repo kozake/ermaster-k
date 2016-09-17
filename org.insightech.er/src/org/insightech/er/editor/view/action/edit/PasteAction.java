@@ -14,6 +14,7 @@ import org.insightech.er.editor.controller.command.edit.PasteCommand;
 import org.insightech.er.editor.model.ERDiagram;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeElement;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeSet;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 import org.insightech.er.editor.model.edit.CopyManager;
 
 public class PasteAction extends SelectionAction {
@@ -75,12 +76,13 @@ public class PasteAction extends SelectionAction {
 		int x = 0;
 		int y = 0;
 
+		Category category = diagram.getCurrentCategory();
 		for (NodeElement nodeElement : pasteList) {
-			if (first || x > nodeElement.getX()) {
-				x = nodeElement.getX();
+			if (first || x > nodeElement.getX(category)) {
+				x = nodeElement.getX(category);
 			}
-			if (first || y > nodeElement.getY()) {
-				y = nodeElement.getY();
+			if (first || y > nodeElement.getY(category)) {
+				y = nodeElement.getY(category);
 			}
 
 			first = false;

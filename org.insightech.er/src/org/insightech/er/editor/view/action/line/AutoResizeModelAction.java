@@ -17,6 +17,7 @@ import org.insightech.er.editor.controller.editpart.element.node.IResizable;
 import org.insightech.er.editor.controller.editpart.element.node.NodeElementEditPart;
 import org.insightech.er.editor.controller.editpart.element.node.NoteEditPart;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeElement;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 import org.insightech.er.editor.view.action.AbstractBaseSelectionAction;
 
 public class AutoResizeModelAction extends AbstractBaseSelectionAction {
@@ -39,9 +40,10 @@ public class AutoResizeModelAction extends AbstractBaseSelectionAction {
 		if (editPart instanceof IResizable) {
 			NodeElement nodeElement = (NodeElement) editPart.getModel();
 
+			Category currentCategory = this.getDiagram().getCurrentCategory();
 			MoveElementCommand command = new MoveElementCommand(this
 					.getDiagram(), ((NodeElementEditPart) editPart).getFigure()
-					.getBounds(), nodeElement.getX(), nodeElement.getY(), -1,
+					.getBounds(), nodeElement.getX(currentCategory), nodeElement.getY(currentCategory), -1,
 					-1, nodeElement);
 
 			commandList.add(command);

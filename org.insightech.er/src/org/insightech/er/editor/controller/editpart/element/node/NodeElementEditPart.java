@@ -202,10 +202,12 @@ public abstract class NodeElementEditPart extends AbstractModelEditPart
 	protected Rectangle getRectangle() {
 		NodeElement element = (NodeElement) this.getModel();
 
-		Point point = new Point(element.getX(), element.getY());
+		Category currentCategory = getDiagram().getCurrentCategory();
+		Point point = new Point(element.getX(currentCategory), element.getY(currentCategory));
 
-		Dimension dimension = new Dimension(element.getWidth(),
-				element.getHeight());
+		Dimension dimension = new Dimension(
+				element.getWidth(currentCategory),
+				element.getHeight(currentCategory));
 
 		Dimension minimumSize = this.figure.getMinimumSize();
 

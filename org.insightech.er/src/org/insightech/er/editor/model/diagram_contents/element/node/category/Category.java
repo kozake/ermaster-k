@@ -38,6 +38,30 @@ public class Category extends NodeElement implements IResizable,
 		this.connectionLocationMap = new HashMap<ConnectionElement, ConnectionElementLocation>();
 	}
 
+	public int getX() {
+		return this.getX(null);
+	}
+
+	public int getY() {
+		return this.getY(null);
+	}
+
+	public int getWidth() {
+		return this.getWidth(null);
+	}
+
+	public int getHeight() {
+		return this.getHeight(null);
+	}
+
+	public void setLocation(Location location) {
+		this.setLocation(null, location);
+	}
+
+	public Location getLocation() {
+		return getLocation(null);
+	}
+
 	public void setContents(List<NodeElement> contetns) {
 		for (NodeElement content : nodeElementList) {
 			if (!contetns.contains(content)) {
@@ -196,7 +220,7 @@ public class Category extends NodeElement implements IResizable,
 		}
 
 		if (this.contains(element)) {
-			Location elementLocation = element.getLocation();
+			Location elementLocation = element.getLocationInAll();
 			Location newLocation = calculateCategoryLocation(elementLocation);
 
 			if (!newLocation.equals(this.getLocation())) {

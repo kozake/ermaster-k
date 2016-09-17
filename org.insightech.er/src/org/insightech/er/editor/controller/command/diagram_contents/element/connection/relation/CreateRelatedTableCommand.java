@@ -131,7 +131,7 @@ public class CreateRelatedTableCommand extends AbstractCreateRelationCommand {
 		ERTable targetTable = (ERTable) this.getTargetModel();
 		this.relation2 = targetTable.createRelation();
 
-		this.relatedTable.setLocation(new Location(
+		this.relatedTable.setLocation(category, new Location(
 				(this.sourceX + this.targetX - ERTable.DEFAULT_WIDTH) / 2,
 				(this.sourceY + this.targetY - ERTable.DEFAULT_HEIGHT) / 2,
 				ERTable.DEFAULT_WIDTH, ERTable.DEFAULT_HEIGHT));

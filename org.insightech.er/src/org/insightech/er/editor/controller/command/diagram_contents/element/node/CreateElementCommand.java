@@ -24,11 +24,11 @@ public class CreateElementCommand extends AbstractCreateElementCommand {
 		this.element = element;
 
 		if (this.element instanceof Category && size != null) {
-			this.element
-					.setLocation(new Location(x, y, size.width, size.height));
+			this.element.setLocation(diagram.getCurrentCategory(),
+					new Location(x, y, size.width, size.height));
 		} else {
-			this.element.setLocation(new Location(x, y, ERTable.DEFAULT_WIDTH,
-					ERTable.DEFAULT_HEIGHT));
+			this.element.setLocation(diagram.getCurrentCategory(), 
+					new Location(x, y, ERTable.DEFAULT_WIDTH, ERTable.DEFAULT_HEIGHT));
 		}
 
 		if (element instanceof ERTable) {

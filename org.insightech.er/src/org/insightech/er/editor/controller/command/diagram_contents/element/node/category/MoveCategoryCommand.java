@@ -43,10 +43,10 @@ public class MoveCategoryCommand extends MoveElementCommand {
 
 		if (!this.move) {
 			for (NodeElement nodeElement : this.nodeElementList) {
-				int nodeElementX = nodeElement.getX();
-				int nodeElementY = nodeElement.getY();
-				int nodeElementWidth = nodeElement.getWidth();
-				int nodeElementHeight = nodeElement.getHeight();
+				int nodeElementX = nodeElement.getX(null);
+				int nodeElementY = nodeElement.getY(null);
+				int nodeElementWidth = nodeElement.getWidth(null);
+				int nodeElementHeight = nodeElement.getHeight(null);
 
 				if (x > nodeElementX) {
 					nodeElementWidth += x - nodeElementX;
@@ -87,9 +87,9 @@ public class MoveCategoryCommand extends MoveElementCommand {
 
 			for (NodeElement nodeElement : this.nodeElementList) {
 				this.nodeElementOldLocationMap
-						.put(nodeElement, new Rectangle(nodeElement.getX(),
-								nodeElement.getY(), nodeElement.getWidth(),
-								nodeElement.getHeight()));
+						.put(nodeElement, new Rectangle(nodeElement.getX(null),
+								nodeElement.getY(null), nodeElement.getWidth(null),
+								nodeElement.getHeight(null)));
 			}
 		}
 	}
@@ -103,9 +103,12 @@ public class MoveCategoryCommand extends MoveElementCommand {
 			this.bendpointListMap = new HashMap<ConnectionElement, List<Bendpoint>>();
 
 			for (NodeElement nodeElement : this.nodeElementList) {
-				nodeElement.setLocation(new Location(
-						nodeElement.getX() + diffX, nodeElement.getY() + diffY,
-						nodeElement.getWidth(), nodeElement.getHeight()));
+				nodeElement.setLocation(null,
+						new Location(
+								nodeElement.getX(null) + diffX,
+								nodeElement.getY(null) + diffY,
+								nodeElement.getWidth(null),
+								nodeElement.getHeight(null)));
 				this.moveBendpoints(nodeElement);
 
 				nodeElement.refreshVisuals();
@@ -129,8 +132,12 @@ public class MoveCategoryCommand extends MoveElementCommand {
 			for (NodeElement nodeElement : this.nodeElementList) {
 				Rectangle rectangle = this.nodeElementOldLocationMap
 						.get(nodeElement);
-				nodeElement.setLocation(new Location(rectangle.x, rectangle.y,
-						rectangle.width, rectangle.height));
+				nodeElement.setLocation(null, 
+						new Location(
+								rectangle.x,
+								rectangle.y,
+								rectangle.width,
+								rectangle.height));
 
 				nodeElement.refreshVisuals();
 			}

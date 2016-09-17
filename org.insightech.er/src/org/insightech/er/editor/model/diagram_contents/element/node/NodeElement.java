@@ -34,28 +34,23 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 		return diagram;
 	}
 
-	public Category getCurrentCategory() {
-		return this.diagram != null ? diagram.getCurrentCategory() : null;
+	public int getX(Category category) {
+		return this.getLocationInternal(category).x;
 	}
 
-	public int getX() {
-		return this.getLocationInCurrentCategory().x;
+	public int getY(Category category) {
+		return this.getLocationInternal(category).y;
 	}
 
-	public int getY() {
-		return this.getLocationInCurrentCategory().y;
+	public int getWidth(Category category) {
+		return this.getLocationInternal(category).width;
 	}
 
-	public int getWidth() {
-		return this.getLocationInCurrentCategory().width;
+	public int getHeight(Category category) {
+		return this.getLocationInternal(category).height;
 	}
 
-	public int getHeight() {
-		return this.getLocationInCurrentCategory().height;
-	}
-
-	public void setLocation(Location location) {
-		Category category = getCurrentCategory();
+	public void setLocation(Category category, Location location) {
 		if (category != null && category.contains(this)) {
 			category.putNodeLocation(this, location);
 		} else {
@@ -63,12 +58,12 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 		}
 	}
 
-	public Location getLocation() {
-		Location location = getLocationInCurrentCategory();
+	public Location getLocation(Category category) {
+		Location location = getLocationInternal(category);
 		return new Location(location.x, location.y, location.width, location.height);
 	}
 
-	public Location getLocation(Category category) {
+	protected Location getLocationInternal(Category category) {
 		if (category != null && category.contains(this)) {
 			Location location = category.getNodeLocation(this);
 			if (location!= null) {
@@ -80,10 +75,6 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 
 	public Location getLocationInAll() {
 		return new Location(this.location.x, this.location.y, this.location.width, this.location.height);
-	}
-
-	private Location getLocationInCurrentCategory() {
-		return getLocation(getCurrentCategory());
 	}
 
 	public List<ConnectionElement> getIncomings() {
@@ -174,7 +165,7 @@ public abstract class NodeElement extends ViewableModel implements ObjectModel {
 	
 
 	public void addCategory(Category category) {
-		category.putNodeLocation(this, getLocation());
+		category.putNodeLocation(this, getLocation(null));
 		for (ConnectionElement conn : incomings) {
 			conn.addCategory(category);
 		}

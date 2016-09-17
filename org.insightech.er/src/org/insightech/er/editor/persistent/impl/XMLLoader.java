@@ -1492,7 +1492,7 @@ public class XMLLoader {
 		int width = this.getIntValue(element, "width");
 		int height = this.getIntValue(element, "height");
 
-		nodeElement.setLocation(new Location(x, y, width, height));
+		nodeElement.setLocation(null, new Location(x, y, width, height));
 	}
 
 	private void loadFont(ViewableModel viewableModel, Element element) {

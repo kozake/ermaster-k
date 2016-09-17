@@ -7,6 +7,7 @@ import org.eclipse.gef.requests.DirectEditRequest;
 import org.insightech.er.editor.controller.command.diagram_contents.element.node.MoveElementCommand;
 import org.insightech.er.editor.controller.command.diagram_contents.element.node.note.NoteEditCommand;
 import org.insightech.er.editor.model.ERDiagram;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 import org.insightech.er.editor.model.diagram_contents.element.node.note.Note;
 
 public class NoteDirectEditPolicy extends DirectEditPolicy {
@@ -24,10 +25,17 @@ public class NoteDirectEditPolicy extends DirectEditPolicy {
 		NoteEditCommand noteEditCommand = new NoteEditCommand(note, text);
 		command.add(noteEditCommand);
 		
+		ERDiagram diagram = (ERDiagram) this.getHost().getRoot().getContents().getModel();
+		Category currentCategory = diagram.getCurrentCategory();
 		MoveElementCommand autoResizeCommand = new MoveElementCommand(
-				(ERDiagram) this.getHost().getRoot().getContents().getModel(), this
-						.getHostFigure().getBounds(), note.getX(), note.getY(),
-				-1, -1, note);
+				diagram,
+				this.getHostFigure().getBounds(),
+				note.getX(currentCategory),
+				note.getY(currentCategory),
+				-1,
+				-1,
+				note);
+
 		command.add(autoResizeCommand);
 
 		return command.unwrap();

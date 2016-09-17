@@ -10,7 +10,6 @@ import org.insightech.er.db.DBManagerFactory;
 import org.insightech.er.editor.model.ObjectModel;
 import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElement;
 import org.insightech.er.editor.model.diagram_contents.element.connection.Relation;
-import org.insightech.er.editor.model.diagram_contents.element.node.Location;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeElement;
 import org.insightech.er.editor.model.diagram_contents.element.node.table.column.Column;
 import org.insightech.er.editor.model.diagram_contents.element.node.table.column.ColumnHolder;
@@ -124,14 +123,6 @@ public abstract class TableView extends NodeElement implements ObjectModel,
 		}
 
 		return relations;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setLocation(Location location) {
-		super.setLocation(location);
 	}
 
 	public List<NormalColumn> getNormalColumns() {
