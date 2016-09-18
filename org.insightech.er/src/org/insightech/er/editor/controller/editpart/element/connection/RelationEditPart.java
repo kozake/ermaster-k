@@ -57,7 +57,7 @@ public class RelationEditPart extends AbstractERDiagramConnectionEditPart {
 		this.installEditPolicy(EditPolicy.CONNECTION_ROLE,
 				new RelationEditPolicy());
 		this.installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE,
-				new RelationBendpointEditPolicy());
+				new RelationBendpointEditPolicy(this.getDiagram()));
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class RelationEditPart extends AbstractERDiagramConnectionEditPart {
 
 			RelativeBendpoint point = new RelativeBendpoint();
 
-			int xp = relation.getTargetXp();
+			int xp = relation.getTargetXp(this.getDiagram().getCurrentCategory());
 			int x;
 
 			if (xp == -1) {

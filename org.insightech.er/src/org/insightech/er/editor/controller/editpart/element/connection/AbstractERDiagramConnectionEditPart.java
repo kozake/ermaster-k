@@ -215,23 +215,26 @@ public abstract class AbstractERDiagramConnectionEditPart extends
 		Point sourcePoint = null;
 		Point targetPoint = null;
 
-		if (sourceEditPart != null && connection.getSourceXp() != -1
-				&& connection.getSourceYp() != -1) {
+		Category currentCategory = getCurrentCategory();
+		if (sourceEditPart != null 
+				&& connection.getSourceXp(currentCategory) != -1
+				&& connection.getSourceYp(currentCategory) != -1) {
 			Rectangle bounds = sourceEditPart.getFigure().getBounds();
 			sourcePoint = new Point(bounds.x
-					+ (bounds.width * connection.getSourceXp() / 100), bounds.y
-					+ (bounds.height * connection.getSourceYp() / 100));
+					+ (bounds.width * connection.getSourceXp(currentCategory) / 100), bounds.y
+					+ (bounds.height * connection.getSourceYp(currentCategory) / 100));
 		}
 
 		NodeElementEditPart targetEditPart = (NodeElementEditPart) this
 				.getTarget();
 
-		if (targetEditPart != null && connection.getTargetXp() != -1
-				&& connection.getTargetYp() != -1) {
+		if (targetEditPart != null 
+				&& connection.getTargetXp(currentCategory) != -1
+				&& connection.getTargetYp(currentCategory) != -1) {
 			Rectangle bounds = targetEditPart.getFigure().getBounds();
 			targetPoint = new Point(bounds.x
-					+ (bounds.width * connection.getTargetXp() / 100), bounds.y
-					+ (bounds.height * connection.getTargetYp() / 100));
+					+ (bounds.width * connection.getTargetXp(currentCategory) / 100), bounds.y
+					+ (bounds.height * connection.getTargetYp(currentCategory) / 100));
 		}
 
 		ConnectionAnchor sourceAnchor = this.getConnectionFigure()
@@ -254,7 +257,7 @@ public abstract class AbstractERDiagramConnectionEditPart extends
 
 		List<org.eclipse.draw2d.Bendpoint> constraint = new ArrayList<org.eclipse.draw2d.Bendpoint>();
 
-		for (Bendpoint bendPoint : connection.getBendpoints()) {
+		for (Bendpoint bendPoint : connection.getBendpoints(getCurrentCategory())) {
 			List<org.eclipse.draw2d.Bendpoint> realPointList = this
 					.getRealBendpoint(bendPoint);
 

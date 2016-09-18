@@ -7,8 +7,10 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.ConnectionEditPart;
 import org.insightech.er.editor.controller.command.AbstractCommand;
 import org.insightech.er.editor.controller.editpart.element.node.NodeElementEditPart;
+import org.insightech.er.editor.model.ERDiagram;
 import org.insightech.er.editor.model.diagram_contents.element.connection.Bendpoint;
 import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElement;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 
 public class RightAngleLineCommand extends AbstractCommand {
 
@@ -26,16 +28,20 @@ public class RightAngleLineCommand extends AbstractCommand {
 	private List<Bendpoint> oldBendpointList;
 
 	private List<Bendpoint> newBendpointList;
+	
+	private Category targetCategory;
 
-	public RightAngleLineCommand(int sourceX, int sourceY, int targetX,
+	public RightAngleLineCommand(ERDiagram diagram, int sourceX, int sourceY, int targetX,
 			int targetY, ConnectionEditPart connectionEditPart) {
+		this.targetCategory = diagram.getCurrentCategory();
+		
 		this.sourceX = sourceX;
 		this.sourceY = sourceY;
 		this.targetX = targetX;
 		this.targetY = targetY;
 		this.connection = (ConnectionElement) connectionEditPart.getModel();
 
-		this.oldBendpointList = this.connection.getBendpoints();
+		this.oldBendpointList = this.connection.getBendpoints(targetCategory);
 
 		this.newBendpointList = new ArrayList<Bendpoint>();
 
@@ -161,7 +167,7 @@ public class RightAngleLineCommand extends AbstractCommand {
 	 */
 	@Override
 	protected void doExecute() {
-		this.connection.setBendpoints(this.newBendpointList);
+		this.connection.setBendpoints(this.targetCategory, this.newBendpointList);
 		this.connection.refreshBendpoint();
 	}
 
@@ -170,7 +176,7 @@ public class RightAngleLineCommand extends AbstractCommand {
 	 */
 	@Override
 	protected void doUndo() {
-		this.connection.setBendpoints(this.oldBendpointList);
+		this.connection.setBendpoints(this.targetCategory, this.oldBendpointList);
 		this.connection.refreshBendpoint();
 	}
 }

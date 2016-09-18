@@ -82,7 +82,7 @@ public abstract class NodeElementEditPart extends AbstractModelEditPart
 	@Override
 	protected void createEditPolicies() {
 		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
-				new NodeElementGraphicalNodeEditPolicy());
+				new NodeElementGraphicalNodeEditPolicy(this.getDiagram()));
 		this.installEditPolicy("Snap Feedback", new SnapFeedbackPolicy());
 	}
 
@@ -175,11 +175,13 @@ public abstract class NodeElementEditPart extends AbstractModelEditPart
 	}
 
 	private void refreshMovedAnchor() {
+		Category currentCategory = getDiagram().getCurrentCategory();
+
 		for (Object sourceConnection : this.getSourceConnections()) {
 			ConnectionEditPart editPart = (ConnectionEditPart) sourceConnection;
 			ConnectionElement connectinoElement = (ConnectionElement) editPart
 					.getModel();
-			if (connectinoElement.isSourceAnchorMoved()) {
+			if (connectinoElement.isSourceAnchorMoved(currentCategory)) {
 				((AbstractERDiagramConnectionEditPart) editPart)
 						.refreshVisuals();
 			}
@@ -189,7 +191,7 @@ public abstract class NodeElementEditPart extends AbstractModelEditPart
 			ConnectionEditPart editPart = (ConnectionEditPart) targetConnection;
 			ConnectionElement connectinoElement = (ConnectionElement) editPart
 					.getModel();
-			if (connectinoElement.isTargetAnchorMoved()) {
+			if (connectinoElement.isTargetAnchorMoved(currentCategory)) {
 				if (connectinoElement.getSource() != connectinoElement
 						.getTarget()) {
 					((AbstractERDiagramConnectionEditPart) editPart)
@@ -248,16 +250,20 @@ public abstract class NodeElementEditPart extends AbstractModelEditPart
 		// return super.getSourceConnectionAnchor(editPart);
 		// }
 
+		Category currentCategory = getDiagram().getCurrentCategory();
+
 		ConnectionElement connection = (ConnectionElement) editPart.getModel();
 
 		Rectangle bounds = this.getFigure().getBounds();
 
 		XYChopboxAnchor anchor = new XYChopboxAnchor(this.getFigure());
 
-		if (connection.getSourceXp() != -1 && connection.getSourceYp() != -1) {
-			anchor.setLocation(new Point(bounds.x
-					+ (bounds.width * connection.getSourceXp() / 100), bounds.y
-					+ (bounds.height * connection.getSourceYp() / 100)));
+		if (connection.getSourceXp(currentCategory) != -1
+		 && connection.getSourceYp(currentCategory) != -1) {
+
+			anchor.setLocation(new Point(
+					bounds.x + (bounds.width  * connection.getSourceXp(currentCategory) / 100),
+					bounds.y + (bounds.height * connection.getSourceYp(currentCategory) / 100)));
 		}
 
 		return anchor;
@@ -331,6 +337,7 @@ public abstract class NodeElementEditPart extends AbstractModelEditPart
 		// if (!(editPart instanceof RelationEditPart)) {
 		// return new ChopboxAnchor(this.getFigure());
 		// }
+		Category currentCategory = getDiagram().getCurrentCategory();
 
 		ConnectionElement connection = (ConnectionElement) editPart.getModel();
 
@@ -338,10 +345,10 @@ public abstract class NodeElementEditPart extends AbstractModelEditPart
 
 		Rectangle bounds = this.getFigure().getBounds();
 
-		if (connection.getTargetXp() != -1 && connection.getTargetYp() != -1) {
-			anchor.setLocation(new Point(bounds.x
-					+ (bounds.width * connection.getTargetXp() / 100), bounds.y
-					+ (bounds.height * connection.getTargetYp() / 100)));
+		if (connection.getTargetXp(currentCategory) != -1 && connection.getTargetYp(currentCategory) != -1) {
+			anchor.setLocation(new Point(
+					bounds.x + (bounds.width  * connection.getTargetXp(currentCategory) / 100), 
+					bounds.y + (bounds.height * connection.getTargetYp(currentCategory) / 100)));
 		}
 
 		return anchor;

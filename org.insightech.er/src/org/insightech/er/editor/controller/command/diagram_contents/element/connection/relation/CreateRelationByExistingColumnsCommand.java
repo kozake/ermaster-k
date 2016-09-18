@@ -11,10 +11,12 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.ui.PlatformUI;
 import org.insightech.er.ERDiagramActivator;
 import org.insightech.er.editor.model.diagram_contents.element.connection.Relation;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 import org.insightech.er.editor.model.diagram_contents.element.node.table.ERTable;
 import org.insightech.er.editor.model.diagram_contents.element.node.table.TableView;
 import org.insightech.er.editor.model.diagram_contents.element.node.table.column.NormalColumn;
 import org.insightech.er.editor.model.diagram_contents.not_element.dictionary.Word;
+import org.insightech.er.editor.model.settings.Settings;
 import org.insightech.er.editor.view.dialog.element.relation.RelationByExistingColumnsDialog;
 
 public class CreateRelationByExistingColumnsCommand extends
@@ -34,6 +36,8 @@ public class CreateRelationByExistingColumnsCommand extends
 
 	private List<Word> wordList;
 
+	private Settings oldSettings;
+
 	public CreateRelationByExistingColumnsCommand() {
 		super();
 		this.wordList = new ArrayList<Word>();
@@ -47,9 +51,17 @@ public class CreateRelationByExistingColumnsCommand extends
 	protected void doExecute() {
 		ERTable sourceTable = (ERTable) this.source.getModel();
 		TableView targetTable = (TableView) this.target.getModel();
+		
+		Settings settings = sourceTable.getDiagram().getDiagramContents().getSettings();
+		this.oldSettings = settings.clone();
 
 		this.relation.setSource(sourceTable);
 		this.relation.setTargetWithoutForeignKey(targetTable);
+
+		for (Category category : settings.getCategorySetting().getAllCategories()) {
+			this.relation.removeCategory(category);
+			this.relation.addCategory(category);
+		}
 
 		for (int i = 0; i < foreignKeyColumnList.size(); i++) {
 			NormalColumn foreignKeyColumn = foreignKeyColumnList.get(i);
@@ -81,6 +93,8 @@ public class CreateRelationByExistingColumnsCommand extends
 
 		this.relation.setSource(null);
 		this.relation.setTargetWithoutForeignKey(null);
+
+		sourceTable.getDiagram().getDiagramContents().setSettings(this.oldSettings);
 
 		for (int i = 0; i < foreignKeyColumnList.size(); i++) {
 			NormalColumn foreignKeyColumn = foreignKeyColumnList.get(i);

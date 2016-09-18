@@ -19,11 +19,17 @@ import org.eclipse.swt.SWT;
 import org.insightech.er.editor.controller.command.diagram_contents.element.connection.bendpoint.MoveRelationBendpointCommand;
 import org.insightech.er.editor.controller.editpart.element.connection.RelationEditPart;
 import org.insightech.er.editor.controller.editpart.element.node.ERTableEditPart;
+import org.insightech.er.editor.model.ERDiagram;
 import org.insightech.er.editor.model.diagram_contents.element.connection.Bendpoint;
 import org.insightech.er.editor.model.diagram_contents.element.connection.Relation;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 
 public class RelationBendpointEditPolicy extends ERDiagramBendpointEditPolicy {
 
+	public RelationBendpointEditPolicy(ERDiagram diagram) {
+		super(diagram);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -32,6 +38,8 @@ public class RelationBendpointEditPolicy extends ERDiagramBendpointEditPolicy {
 		Relation relation = (Relation) getHost().getModel();
 		RelationEditPart editPart = (RelationEditPart) this.getHost();
 
+		Category currentCategory = getDiagram().getCurrentCategory();
+		
 		if (relation.getSource() == relation.getTarget()) {
 			if (bendpointrequest.getIndex() != 1) {
 				return;
@@ -54,9 +62,9 @@ public class RelationBendpointEditPolicy extends ERDiagramBendpointEditPolicy {
 			rect.width = (int) (bounds.width * rate.getX() / 100);
 			rect.height = (int) (bounds.height * rate.getY() / 100);
 
-			relation.setSourceLocationp(100, (int) (100 * rateY));
+			relation.setSourceLocationp(currentCategory, 100, (int) (100 * rateY));
 
-			relation.setTargetLocationp((int) (100 * rateX), 100);
+			relation.setTargetLocationp(currentCategory, (int) (100 * rateX), 100);
 
 			LayerManager manager = (LayerManager) tableEditPart.getRoot();
 			IFigure layer = manager.getLayer(LayerConstants.PRIMARY_LAYER);
@@ -135,8 +143,7 @@ public class RelationBendpointEditPolicy extends ERDiagramBendpointEditPolicy {
 				Bendpoint rate = this.getRate(point);
 
 				MoveRelationBendpointCommand command = new MoveRelationBendpointCommand(
-						editPart, rate.getX(), rate.getY(),
-						bendpointrequest.getIndex());
+						getDiagram(), editPart, rate.getX(), rate.getY(), bendpointrequest.getIndex());
 
 				return command;
 			}
@@ -146,7 +153,7 @@ public class RelationBendpointEditPolicy extends ERDiagramBendpointEditPolicy {
 		this.getConnection().translateToRelative(point);
 
 		MoveRelationBendpointCommand command = new MoveRelationBendpointCommand(
-				editPart, point.x, point.y, bendpointrequest.getIndex());
+				getDiagram(), editPart, point.x, point.y, bendpointrequest.getIndex());
 
 		return command;
 	}

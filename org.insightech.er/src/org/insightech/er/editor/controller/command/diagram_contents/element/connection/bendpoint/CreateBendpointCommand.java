@@ -3,9 +3,12 @@ package org.insightech.er.editor.controller.command.diagram_contents.element.con
 import org.insightech.er.editor.controller.command.AbstractCommand;
 import org.insightech.er.editor.model.diagram_contents.element.connection.Bendpoint;
 import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElement;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 
 public class CreateBendpointCommand extends AbstractCommand {
 
+	private Category category;
+	
 	private ConnectionElement connection;
 
 	int x;
@@ -14,8 +17,9 @@ public class CreateBendpointCommand extends AbstractCommand {
 
 	private int index;
 
-	public CreateBendpointCommand(ConnectionElement connection, int x, int y,
+	public CreateBendpointCommand(Category category, ConnectionElement connection, int x, int y,
 			int index) {
+		this.category = category;
 		this.connection = connection;
 		this.x = x;
 		this.y = y;
@@ -28,7 +32,7 @@ public class CreateBendpointCommand extends AbstractCommand {
 	@Override
 	protected void doExecute() {
 		Bendpoint bendpoint = new Bendpoint(this.x, this.y);
-		connection.addBendpoint(index, bendpoint);
+		connection.addBendpoint(category, index, bendpoint);
 		
 		connection.refreshBendpoint();
 	}
@@ -38,7 +42,7 @@ public class CreateBendpointCommand extends AbstractCommand {
 	 */
 	@Override
 	protected void doUndo() {
-		connection.removeBendpoint(index);
+		connection.removeBendpoint(category, index);
 		
 		connection.refreshBendpoint();
 	}

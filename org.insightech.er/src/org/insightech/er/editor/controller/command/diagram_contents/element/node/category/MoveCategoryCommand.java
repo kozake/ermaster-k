@@ -160,7 +160,7 @@ public class MoveCategoryCommand extends MoveElementCommand {
 
 			if (this.category.contains(target)) {
 				List<Bendpoint> bendpointList = connectionElement
-						.getBendpoints();
+						.getBendpoints(null);
 
 				List<Bendpoint> oldBendpointList = new ArrayList<Bendpoint>();
 
@@ -173,7 +173,7 @@ public class MoveCategoryCommand extends MoveElementCommand {
 
 					Bendpoint newBendpoint = new Bendpoint(oldBendPoint.getX()
 							+ this.diffX, oldBendPoint.getY() + this.diffY);
-					connectionElement.replaceBendpoint(index, newBendpoint);
+					connectionElement.replaceBendpoint(null, index, newBendpoint);
 
 					oldBendpointList.add(oldBendPoint);
 				}
@@ -190,7 +190,7 @@ public class MoveCategoryCommand extends MoveElementCommand {
 					.get(connectionElement);
 
 			for (int index = 0; index < oldBendpointList.size(); index++) {
-				connectionElement.replaceBendpoint(index,
+				connectionElement.replaceBendpoint(null, index,
 						oldBendpointList.get(index));
 			}
 		}

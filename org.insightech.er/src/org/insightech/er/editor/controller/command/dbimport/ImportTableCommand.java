@@ -228,10 +228,10 @@ public class ImportTableCommand extends AbstractCreateElementCommand {
 		int xp = 100 - (rate / 2);
 		int yp = 100 - (rate / 2);
 
-		relation.setSourceLocationp(100, yp);
-		relation.setTargetLocationp(xp, 100);
+		relation.setSourceLocationp(this.category, 100, yp);
+		relation.setTargetLocationp(this.category, xp, 100);
 
-		relation.addBendpoint(0, bendpoint0);
+		relation.addBendpoint(this.category, 0, bendpoint0);
 	}
 
 	/**

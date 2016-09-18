@@ -1,10 +1,14 @@
 package org.insightech.er.editor.controller.command.diagram_contents.element.connection.relation;
 
 import org.insightech.er.editor.controller.command.AbstractCommand;
+import org.insightech.er.editor.model.ERDiagram;
 import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElement;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 
 public class ReconnectTargetCommand extends AbstractCommand {
 
+	private Category targetCategory;
+	
 	private ConnectionElement connection;
 
 	int xp;
@@ -15,7 +19,8 @@ public class ReconnectTargetCommand extends AbstractCommand {
 
 	int oldYp;
 
-	public ReconnectTargetCommand(ConnectionElement connection, int xp, int yp) {
+	public ReconnectTargetCommand(ERDiagram diagram, ConnectionElement connection, int xp, int yp) {
+		this.targetCategory = diagram.getCurrentCategory();
 		this.connection = connection;
 
 		this.xp = xp;
@@ -27,10 +32,10 @@ public class ReconnectTargetCommand extends AbstractCommand {
 	 */
 	@Override
 	protected void doExecute() {
-		this.oldXp = this.connection.getTargetXp();
-		this.oldYp = this.connection.getTargetYp();
+		this.oldXp = this.connection.getTargetXp(targetCategory);
+		this.oldYp = this.connection.getTargetYp(targetCategory);
 
-		this.connection.setTargetLocationp(this.xp, this.yp);
+		this.connection.setTargetLocationp(targetCategory, this.xp, this.yp);
 		this.connection.refreshVisuals();
 	}
 
@@ -39,7 +44,7 @@ public class ReconnectTargetCommand extends AbstractCommand {
 	 */
 	@Override
 	protected void doUndo() {
-		this.connection.setTargetLocationp(this.oldXp, this.oldYp);
+		this.connection.setTargetLocationp(targetCategory, this.oldXp, this.oldYp);
 		this.connection.refreshVisuals();
 	}
 }

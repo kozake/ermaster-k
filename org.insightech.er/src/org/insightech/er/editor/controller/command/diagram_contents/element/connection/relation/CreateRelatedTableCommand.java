@@ -9,6 +9,7 @@ import org.insightech.er.editor.model.diagram_contents.element.node.Location;
 import org.insightech.er.editor.model.diagram_contents.element.node.NodeElement;
 import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 import org.insightech.er.editor.model.diagram_contents.element.node.table.ERTable;
+import org.insightech.er.editor.model.settings.Settings;
 
 public class CreateRelatedTableCommand extends AbstractCreateRelationCommand {
 
@@ -33,6 +34,8 @@ public class CreateRelatedTableCommand extends AbstractCreateRelationCommand {
 	protected Location newCategoryLocation;
 
 	protected Location oldCategoryLocation;
+
+	private Settings oldSettings;
 
 	public CreateRelatedTableCommand(ERDiagram diagram) {
 		super();
@@ -82,6 +85,9 @@ public class CreateRelatedTableCommand extends AbstractCreateRelationCommand {
 
 		this.init();
 
+		Settings settings = diagram.getDiagramContents().getSettings();
+		this.oldSettings = settings.clone();
+
 		this.diagram.addNewContent(this.relatedTable);
 		this.addToCategory(this.relatedTable);
 
@@ -90,6 +96,13 @@ public class CreateRelatedTableCommand extends AbstractCreateRelationCommand {
 
 		this.relation2.setSource((ERTable) this.target.getModel());
 		this.relation2.setTargetTableView(this.relatedTable);
+
+		for (Category category : settings.getCategorySetting().getAllCategories()) {
+			this.relation1.removeCategory(category);
+			this.relation1.addCategory(category);
+			this.relation2.removeCategory(category);
+			this.relation2.addCategory(category);
+		}
 
 		this.diagram.refreshChildren();
 		this.getTargetModel().refresh();
@@ -113,6 +126,8 @@ public class CreateRelatedTableCommand extends AbstractCreateRelationCommand {
 
 		this.relation2.setSource(null);
 		this.relation2.setTargetTableView(null);
+
+		this.diagram.getDiagramContents().setSettings(oldSettings);
 
 		this.diagram.refreshChildren();
 		this.getTargetModel().refresh();

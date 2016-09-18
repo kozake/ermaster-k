@@ -62,7 +62,7 @@ public class PasteCommand extends AbstractCommand {
 							nodeElement.getHeight(currentCategory)));
 
 			for (ConnectionElement connection : nodeElement.getIncomings()) {
-				for (Bendpoint bendpoint : connection.getBendpoints()) {
+				for (Bendpoint bendpoint : connection.getBendpoints(diagram.getCurrentCategory())) {
 					bendpoint.transform(x, y);
 				}
 			}

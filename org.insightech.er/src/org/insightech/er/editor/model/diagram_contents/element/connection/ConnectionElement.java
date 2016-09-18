@@ -90,11 +90,6 @@ public abstract class ConnectionElement extends AbstractModel implements
 		if (this.source != null) {
 			this.source.addOutgoing(this);
 		}
-		Category currentCategory = getCurrentCategory();
-		if (currentCategory != null) {
-			removeCategory(currentCategory);
-			addCategory(currentCategory);
-		}
 	}
 
 	public void setSourceAndTarget(NodeElement source, NodeElement target) {
@@ -111,11 +106,6 @@ public abstract class ConnectionElement extends AbstractModel implements
 
 		if (this.target != null) {
 			this.target.addIncoming(this);
-		}
-		Category currentCategory = getCurrentCategory();
-		if (currentCategory != null) {
-			removeCategory(currentCategory);
-			addCategory(currentCategory);
 		}
 	}
 
@@ -137,60 +127,60 @@ public abstract class ConnectionElement extends AbstractModel implements
 		}
 	}
 
-	public void addBendpoint(int index, Bendpoint point) {
-		getCurrentCategoryLocation().addBendpoint(index, point);
+	public void addBendpoint(Category category, int index, Bendpoint point) {
+		getLocation(category).addBendpoint(index, point);
 	}
 
-	public void setBendpoints(List<Bendpoint> points) {
-		getCurrentCategoryLocation().setBendpoints(points);
+	public void setBendpoints(Category category, List<Bendpoint> points) {
+		getLocation(category).setBendpoints(points);
 	}
 
-	public List<Bendpoint> getBendpoints() {
-		return getCurrentCategoryLocation().getBendpoints();
+	public List<Bendpoint> getBendpoints(Category category) {
+		return getLocation(category).getBendpoints();
 	}
 
-	public void removeBendpoint(int index) {
-		getCurrentCategoryLocation().getBendpoints().remove(index);
+	public void removeBendpoint(Category category, int index) {
+		getLocation(category).getBendpoints().remove(index);
 	}
 
-	public void replaceBendpoint(int index, Bendpoint point) {
-		getCurrentCategoryLocation().getBendpoints().set(index, point);
+	public void replaceBendpoint(Category category, int index, Bendpoint point) {
+		getLocation(category).getBendpoints().set(index, point);
 	}
 
-	public int getSourceXp() {
-		return getCurrentCategoryLocation().getSourceXp();
+	public int getSourceXp(Category category) {
+		return getLocation(category).getSourceXp();
 	}
 
-	public void setSourceLocationp(int sourceXp, int sourceYp) {
-		ConnectionElementLocation location = getCurrentCategoryLocation();
+	public void setSourceLocationp(Category category, int sourceXp, int sourceYp) {
+		ConnectionElementLocation location = getLocation(category);
 		location.setSourceXp(sourceXp);
 		location.setSourceYp(sourceYp);
 	}
 
-	public int getSourceYp() {
-		return getCurrentCategoryLocation().getSourceYp();
+	public int getSourceYp(Category category) {
+		return getLocation(category).getSourceYp();
 	}
 
-	public int getTargetXp() {
-		return getCurrentCategoryLocation().getTargetXp();
+	public int getTargetXp(Category category) {
+		return getLocation(category).getTargetXp();
 	}
 
-	public void setTargetLocationp(int targetXp, int targetYp) {
-		ConnectionElementLocation location = getCurrentCategoryLocation();
+	public void setTargetLocationp(Category category, int targetXp, int targetYp) {
+		ConnectionElementLocation location = getLocation(category);
 		location.setTargetXp(targetXp);
 		location.setTargetYp(targetYp);
 	}
 
-	public int getTargetYp() {
-		return getCurrentCategoryLocation().getTargetYp();
+	public int getTargetYp(Category category) {
+		return getLocation(category).getTargetYp();
 	}
 
-	public boolean isSourceAnchorMoved() {
-		return getSourceXp() != -1;
+	public boolean isSourceAnchorMoved(Category category) {
+		return getSourceXp(category) != -1;
 	}
 
-	public boolean isTargetAnchorMoved() {
-		return getTargetXp() != -1;
+	public boolean isTargetAnchorMoved(Category category) {
+		return getTargetXp(category) != -1;
 	}
 
 	public void setColor(int red, int green, int blue) {
@@ -232,22 +222,15 @@ public abstract class ConnectionElement extends AbstractModel implements
 		this.location = location;
 	}
 
-	private Category getCurrentCategory() {
+	private ConnectionElementLocation getLocation(Category category) {
 
-		return source != null ? source.getDiagram().getCurrentCategory() : 
-			   target != null ? target.getDiagram().getCurrentCategory() : null;
-	}
-	
-	private ConnectionElementLocation getCurrentCategoryLocation() {
-
-		Category currentCategory = getCurrentCategory();
-		if (currentCategory != null && !currentCategory.getConnectionLocationMap().containsKey(this)) {
-			addCategory(currentCategory);
+		if (category != null && !category.getConnectionLocationMap().containsKey(this)) {
+			addCategory(category);
 		}
 		
 		ConnectionElementLocation currentLocation = null;
-		if (currentCategory != null) {
-			currentLocation = currentCategory.getConnectionElementLocation(this);
+		if (category != null) {
+			currentLocation = category.getConnectionElementLocation(this);
 		}
 
 		return currentLocation != null ? currentLocation : location;

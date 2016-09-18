@@ -135,7 +135,7 @@ public class ERDiagramLayoutEditPolicy extends XYLayoutEditPolicy {
 							.getModel();
 
 					List<Bendpoint> bendpointList = connectionElement
-							.getBendpoints();
+							.getBendpoints(diagram.getCurrentCategory());
 
 					for (int index = 0; index < bendpointList.size(); index++) {
 						Bendpoint bendPoint = bendpointList.get(index);
@@ -145,7 +145,7 @@ public class ERDiagramLayoutEditPolicy extends XYLayoutEditPolicy {
 						}
 
 						MoveBendpointCommand moveCommand = new MoveBendpointCommand(
-								connection, bendPoint.getX() + diffX,
+								diagram, connection, bendPoint.getX() + diffX,
 								bendPoint.getY() + diffY, index);
 						bendpointMoveCommandList.add(moveCommand);
 					}

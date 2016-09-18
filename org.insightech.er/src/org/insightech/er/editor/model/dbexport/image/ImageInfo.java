@@ -278,7 +278,7 @@ public class ImageInfo {
 				for (ConnectionElement connection : sourceElement
 						.getOutgoings()) {
 					if (visibleElements.containsKey(connection.getTarget())) {
-						for (Bendpoint bendpoint : connection.getBendpoints()) {
+						for (Bendpoint bendpoint : connection.getBendpoints(category)) {
 							int x = bendpoint.getX();
 							int y = bendpoint.getY();
 

@@ -17,7 +17,9 @@ import org.insightech.er.editor.ERDiagramEditor;
 import org.insightech.er.editor.controller.command.diagram_contents.element.connection.bendpoint.RightAngleLineCommand;
 import org.insightech.er.editor.controller.editpart.element.node.IResizable;
 import org.insightech.er.editor.controller.editpart.element.node.NodeElementEditPart;
+import org.insightech.er.editor.model.ERDiagram;
 import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElement;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 import org.insightech.er.editor.view.action.AbstractBaseSelectionAction;
 
 public class RightAngleLineAction extends AbstractBaseSelectionAction {
@@ -71,26 +73,28 @@ public class RightAngleLineAction extends AbstractBaseSelectionAction {
 
 		// ConnectionEditPart connectionEditPart = (ConnectionEditPart)
 		// connectionEditPart;
+		ERDiagram diagram = getDiagram();
+		Category currentCategory = diagram.getCurrentCategory();
 
 		ConnectionElement connection = (ConnectionElement) connectionEditPart
 				.getModel();
 
-		if (connection.getSourceXp() != -1) {
+		if (connection.getSourceXp(currentCategory) != -1) {
 			NodeEditPart editPart = (NodeEditPart) connectionEditPart
 					.getSource();
 			Rectangle bounds = editPart.getFigure().getBounds();
 
-			sourceX = bounds.x + (bounds.width * connection.getSourceXp() / 100);
-			sourceY = bounds.y + (bounds.height * connection.getSourceYp() / 100);
+			sourceX = bounds.x + (bounds.width * connection.getSourceXp(currentCategory) / 100);
+			sourceY = bounds.y + (bounds.height * connection.getSourceYp(currentCategory) / 100);
 		}
 
-		if (connection.getTargetXp() != -1) {
+		if (connection.getTargetXp(currentCategory) != -1) {
 			NodeEditPart editPart = (NodeEditPart) connectionEditPart
 					.getTarget();
 			Rectangle bounds = editPart.getFigure().getBounds();
 
-			targetX = bounds.x + (bounds.width * connection.getTargetXp() / 100);
-			targetY = bounds.y + (bounds.height * connection.getTargetYp() / 100);
+			targetX = bounds.x + (bounds.width * connection.getTargetXp(currentCategory) / 100);
+			targetY = bounds.y + (bounds.height * connection.getTargetYp(currentCategory) / 100);
 		}
 
 		if (sourceX == -1) {
@@ -113,8 +117,8 @@ public class RightAngleLineAction extends AbstractBaseSelectionAction {
 			targetY = targetPoint.y;
 		}
 
-		RightAngleLineCommand command = new RightAngleLineCommand(sourceX,
-				sourceY, targetX, targetY, connectionEditPart);
+		RightAngleLineCommand command = new RightAngleLineCommand(diagram, 
+				sourceX, sourceY, targetX, targetY, connectionEditPart);
 
 		return command;
 	}

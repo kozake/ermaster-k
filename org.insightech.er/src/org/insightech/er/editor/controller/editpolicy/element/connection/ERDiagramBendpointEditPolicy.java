@@ -11,11 +11,22 @@ import org.eclipse.gef.requests.BendpointRequest;
 import org.insightech.er.editor.controller.command.diagram_contents.element.connection.bendpoint.CreateBendpointCommand;
 import org.insightech.er.editor.controller.command.diagram_contents.element.connection.bendpoint.DeleteBendpointCommand;
 import org.insightech.er.editor.controller.command.diagram_contents.element.connection.bendpoint.MoveBendpointCommand;
+import org.insightech.er.editor.model.ERDiagram;
 import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElement;
 import org.insightech.er.editor.view.figure.connection.ERDiagramConnection;
 
 public class ERDiagramBendpointEditPolicy extends BendpointEditPolicy {
 
+	private ERDiagram diagram;
+	
+	public ERDiagramBendpointEditPolicy(ERDiagram diagram) {
+		this.diagram = diagram;
+	}
+	
+	protected ERDiagram getDiagram() {
+		return this.diagram;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -35,6 +46,7 @@ public class ERDiagramBendpointEditPolicy extends BendpointEditPolicy {
 		this.getConnection().translateToRelative(point);
 
 		CreateBendpointCommand createBendpointCommand = new CreateBendpointCommand(
+				this.diagram.getCurrentCategory(),
 				connection, point.x, point.y, bendpointrequest.getIndex());
 
 		return createBendpointCommand;
@@ -52,8 +64,8 @@ public class ERDiagramBendpointEditPolicy extends BendpointEditPolicy {
 			return null;
 		}
 
-		DeleteBendpointCommand command = new DeleteBendpointCommand(connection,
-				bendpointrequest.getIndex());
+		DeleteBendpointCommand command = new DeleteBendpointCommand(
+				diagram, connection, bendpointrequest.getIndex());
 
 		return command;
 	}
@@ -68,8 +80,8 @@ public class ERDiagramBendpointEditPolicy extends BendpointEditPolicy {
 		Point point = bendpointrequest.getLocation();
 		this.getConnection().translateToRelative(point);
 
-		MoveBendpointCommand command = new MoveBendpointCommand(editPart,
-				point.x, point.y, bendpointrequest.getIndex());
+		MoveBendpointCommand command = new MoveBendpointCommand(
+				diagram, editPart, point.x, point.y, bendpointrequest.getIndex());
 
 		return command;
 	}

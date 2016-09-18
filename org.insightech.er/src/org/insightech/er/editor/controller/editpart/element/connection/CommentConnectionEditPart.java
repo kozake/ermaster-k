@@ -39,7 +39,7 @@ public class CommentConnectionEditPart extends
 		this.installEditPolicy(EditPolicy.CONNECTION_ROLE,
 				new CommentConnectionEditPolicy());
 		this.installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE,
-				new ERDiagramBendpointEditPolicy());
+				new ERDiagramBendpointEditPolicy(getDiagram()));
 	}
 
 	/**

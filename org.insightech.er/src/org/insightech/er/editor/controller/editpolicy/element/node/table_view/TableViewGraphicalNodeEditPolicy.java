@@ -23,6 +23,11 @@ import org.insightech.er.editor.model.diagram_contents.element.node.table.TableV
 
 public class TableViewGraphicalNodeEditPolicy extends
 		NodeElementGraphicalNodeEditPolicy {
+	
+	public TableViewGraphicalNodeEditPolicy(ERDiagram diagram) {
+		super(diagram);
+	}
+	
 
 	@Override
 	public void showTargetFeedback(Request request) {

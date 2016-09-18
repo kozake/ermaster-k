@@ -2,11 +2,15 @@ package org.insightech.er.editor.controller.command.diagram_contents.element.con
 
 import org.eclipse.gef.ConnectionEditPart;
 import org.insightech.er.editor.controller.command.AbstractCommand;
+import org.insightech.er.editor.model.ERDiagram;
 import org.insightech.er.editor.model.diagram_contents.element.connection.Bendpoint;
 import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElement;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 
 public class MoveBendpointCommand extends AbstractCommand {
 
+	private Category targetCategory;
+	
 	private ConnectionEditPart editPart;
 
 	private Bendpoint bendPoint;
@@ -15,8 +19,9 @@ public class MoveBendpointCommand extends AbstractCommand {
 
 	private int index;
 
-	public MoveBendpointCommand(ConnectionEditPart editPart, int x, int y,
+	public MoveBendpointCommand(ERDiagram diagram, ConnectionEditPart editPart, int x, int y,
 			int index) {
+		this.targetCategory = diagram.getCurrentCategory();
 		this.editPart = editPart;
 		this.bendPoint = new Bendpoint(x, y);
 		this.index = index;
@@ -29,8 +34,8 @@ public class MoveBendpointCommand extends AbstractCommand {
 	protected void doExecute() {
 		ConnectionElement connection = (ConnectionElement) editPart.getModel();
 
-		this.oldBendpoint = connection.getBendpoints().get(index);
-		connection.replaceBendpoint(index, this.bendPoint);
+		this.oldBendpoint = connection.getBendpoints(targetCategory).get(index);
+		connection.replaceBendpoint(targetCategory, index, this.bendPoint);
 		
 		connection.refreshBendpoint();
 	}
@@ -41,7 +46,7 @@ public class MoveBendpointCommand extends AbstractCommand {
 	@Override
 	protected void doUndo() {
 		ConnectionElement connection = (ConnectionElement) editPart.getModel();
-		connection.replaceBendpoint(index, this.oldBendpoint);
+		connection.replaceBendpoint(targetCategory, index, this.oldBendpoint);
 		
 		connection.refreshBendpoint();
 	}

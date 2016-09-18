@@ -6,10 +6,17 @@ import org.eclipse.gef.requests.CreateConnectionRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
 import org.insightech.er.editor.controller.command.diagram_contents.element.connection.CreateCommentConnectionCommand;
 import org.insightech.er.editor.controller.command.diagram_contents.element.connection.CreateConnectionCommand;
+import org.insightech.er.editor.model.ERDiagram;
 import org.insightech.er.editor.model.diagram_contents.element.connection.CommentConnection;
 
 public class ConnectionGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy {
 
+	private ERDiagram diagram;
+	
+	public ConnectionGraphicalNodeEditPolicy(ERDiagram diagram) {
+		this.diagram = diagram;
+	}
+	
 	@Override
 	protected Command getConnectionCompleteCommand(
 			CreateConnectionRequest request) {
@@ -33,7 +40,7 @@ public class ConnectionGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy {
 			CommentConnection connection = (CommentConnection) object;
 
 			CreateConnectionCommand command = new CreateCommentConnectionCommand(
-					connection);
+					this.diagram, connection);
 
 			command.setSource(request.getTargetEditPart());
 			request.setStartCommand(command);

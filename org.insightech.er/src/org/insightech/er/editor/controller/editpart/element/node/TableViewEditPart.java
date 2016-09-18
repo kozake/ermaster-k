@@ -201,6 +201,6 @@ public abstract class TableViewEditPart extends NodeElementEditPart implements
 		this.installEditPolicy(EditPolicy.COMPONENT_ROLE,
 				new TableViewComponentEditPolicy());
 		this.installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE,
-				new TableViewGraphicalNodeEditPolicy());
+				new TableViewGraphicalNodeEditPolicy(this.getDiagram()));
 	}
 }

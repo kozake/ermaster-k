@@ -34,6 +34,12 @@ import org.insightech.er.editor.model.diagram_contents.element.node.table.ERTabl
 
 public class NodeElementGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy {
 
+	private ERDiagram diagram;
+	
+	public NodeElementGraphicalNodeEditPolicy(ERDiagram diagram) {
+		this.diagram = diagram;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -88,7 +94,7 @@ public class NodeElementGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy 
 			CommentConnection connection = (CommentConnection) object;
 
 			CreateConnectionCommand command = new CreateCommentConnectionCommand(
-					connection);
+					diagram, connection);
 
 			command.setSource(request.getTargetEditPart());
 			request.setStartCommand(command);
@@ -213,8 +219,8 @@ public class NodeElementGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy 
 			yp = 100 * (point.y - bounds.y) / bounds.height;
 		}
 
-		ReconnectSourceCommand command = new ReconnectSourceCommand(connection,
-				xp, yp);
+		ReconnectSourceCommand command = new ReconnectSourceCommand(
+				diagram, connection, xp, yp);
 
 		return command;
 	}
@@ -262,8 +268,8 @@ public class NodeElementGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy 
 			xp = 100 * (point.x - bounds.x) / bounds.width;
 			yp = 100 * (point.y - bounds.y) / bounds.height;
 		}
-		ReconnectTargetCommand command = new ReconnectTargetCommand(connection,
-				xp, yp);
+		ReconnectTargetCommand command = new ReconnectTargetCommand(
+				diagram, connection, xp, yp);
 
 		return command;
 	}

@@ -8,6 +8,7 @@ import org.insightech.er.editor.model.ERDiagram;
 import org.insightech.er.editor.model.diagram_contents.element.connection.Bendpoint;
 import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElement;
 import org.insightech.er.editor.model.diagram_contents.element.connection.Relation;
+import org.insightech.er.editor.model.diagram_contents.element.node.category.Category;
 
 public class DefaultLineCommand extends AbstractCommand {
 
@@ -22,19 +23,23 @@ public class DefaultLineCommand extends AbstractCommand {
 	private ConnectionElement connection;
 
 	private List<Bendpoint> oldBendpointList;
+	
+	private Category targetCategory;
 
 	public DefaultLineCommand(ERDiagram diagram, ConnectionElement connection) {
+		
+		this.targetCategory = diagram.getCurrentCategory();
 		if (connection instanceof Relation) {
 			Relation relation = (Relation) connection;
 
-			this.sourceXp = relation.getSourceXp();
-			this.sourceYp = relation.getSourceYp();
-			this.targetXp = relation.getTargetXp();
-			this.targetYp = relation.getTargetYp();
+			this.sourceXp = relation.getSourceXp(targetCategory);
+			this.sourceYp = relation.getSourceYp(targetCategory);
+			this.targetXp = relation.getTargetXp(targetCategory);
+			this.targetYp = relation.getTargetYp(targetCategory);
 		}
 
 		this.connection = connection;
-		this.oldBendpointList = this.connection.getBendpoints();
+		this.oldBendpointList = this.connection.getBendpoints(targetCategory);
 	}
 
 	/**
@@ -42,12 +47,12 @@ public class DefaultLineCommand extends AbstractCommand {
 	 */
 	@Override
 	protected void doExecute() {
-		this.connection.setBendpoints(new ArrayList<Bendpoint>());
+		this.connection.setBendpoints(targetCategory, new ArrayList<Bendpoint>());
 		if (this.connection instanceof Relation) {
 			Relation relation = (Relation) this.connection;
 
-			relation.setSourceLocationp(-1, -1);
-			relation.setTargetLocationp(-1, -1);
+			relation.setSourceLocationp(targetCategory, -1, -1);
+			relation.setTargetLocationp(targetCategory, -1, -1);
 			// relation.setParentMove();
 		}
 
@@ -59,12 +64,12 @@ public class DefaultLineCommand extends AbstractCommand {
 	 */
 	@Override
 	protected void doUndo() {
-		this.connection.setBendpoints(this.oldBendpointList);
+		this.connection.setBendpoints(targetCategory, this.oldBendpointList);
 		if (this.connection instanceof Relation) {
 			Relation relation = (Relation) this.connection;
 
-			relation.setSourceLocationp(this.sourceXp, this.sourceYp);
-			relation.setTargetLocationp(this.targetXp, this.targetYp);
+			relation.setSourceLocationp(targetCategory, this.sourceXp, this.sourceYp);
+			relation.setTargetLocationp(targetCategory, this.targetXp, this.targetYp);
 			// relation.setParentMove();
 		}
 

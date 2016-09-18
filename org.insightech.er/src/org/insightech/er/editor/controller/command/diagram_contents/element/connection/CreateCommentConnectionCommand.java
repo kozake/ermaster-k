@@ -1,12 +1,13 @@
 package org.insightech.er.editor.controller.command.diagram_contents.element.connection;
 
+import org.insightech.er.editor.model.ERDiagram;
 import org.insightech.er.editor.model.diagram_contents.element.connection.ConnectionElement;
 import org.insightech.er.editor.model.diagram_contents.element.node.note.Note;
 
 public class CreateCommentConnectionCommand extends CreateConnectionCommand {
 
-	public CreateCommentConnectionCommand(ConnectionElement connection) {
-		super(connection);
+	public CreateCommentConnectionCommand(ERDiagram diagram, ConnectionElement connection) {
+		super(diagram, connection);
 	}
 
 	/**

@@ -1874,9 +1874,9 @@ public class XMLLoader {
 		context.connectionSourceMap.put(connection, source);
 		context.connectionTargetMap.put(connection, target);
 
-		connection.setSourceLocationp(this.getIntValue(element, "source_xp"),
+		connection.setSourceLocationp(null, this.getIntValue(element, "source_xp"),
 				this.getIntValue(element, "source_yp"));
-		connection.setTargetLocationp(this.getIntValue(element, "target_xp"),
+		connection.setTargetLocationp(null, this.getIntValue(element, "target_xp"),
 				this.getIntValue(element, "target_yp"));
 
 		NodeList nodeList = element.getChildNodes();
@@ -1895,7 +1895,7 @@ public class XMLLoader {
 			bendpoint.setRelative(this.getBooleanValue(bendPointElement,
 					"relative"));
 
-			connection.addBendpoint(index++, bendpoint);
+			connection.addBendpoint(null, index++, bendpoint);
 		}
 
 		this.loadConnectionColor(connection, element);
