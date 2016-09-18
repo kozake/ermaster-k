@@ -2,7 +2,7 @@
 <feature
       id="org.insightech.er.feature"
       label="ERMaster"
-      version="1.0.0.v20141214-2153"
+      version="1.0.0.v20160918-2330"
       provider-name="Insightech.org"
       plugin="org.insightech.er">
 
@@ -48,7 +48,7 @@ limitations under the License.
    </license>
 
    <url>
-      <update label="ERMaster" url="http://downloads.sourceforge.net/project/ermaster/ermaster"/>
+      <update label="ERMaster" url="https://kozake.github.io/ermaster-k/org.insightech.er.update/site.xml"/>
    </url>
 
    <requires>
