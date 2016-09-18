@@ -22,6 +22,8 @@ import org.insightech.er.editor.view.figure.table.style.AbstractStyleSupport;
 public class FunnyStyleSupport extends AbstractStyleSupport {
 
 	private Label nameLabel;
+	
+	private Figure centerFigure;
 
 	public FunnyStyleSupport(TableFigure tableFigure) {
 		super(tableFigure);
@@ -78,12 +80,12 @@ public class FunnyStyleSupport extends AbstractStyleSupport {
 		columns.setBackgroundColor(ColorConstants.white);
 		columns.setOpaque(true);
 
-		Figure centerFigure = new Figure();
-		centerFigure.setLayoutManager(new BorderLayout());
-		centerFigure.setBorder(new MarginBorder(new Insets(0, 2, 0, 2)));
+		this.centerFigure = new Figure();
+		this.centerFigure.setLayoutManager(new BorderLayout());
+		this.centerFigure.setBorder(new MarginBorder(new Insets(0, 2, 0, 2)));
 
 		centerFigure.add(columns, BorderLayout.CENTER);
-		this.getTableFigure().add(centerFigure, BorderLayout.CENTER);
+		this.getTableFigure().add(this.centerFigure, BorderLayout.CENTER);
 	}
 
 	/**
@@ -208,5 +210,10 @@ public class FunnyStyleSupport extends AbstractStyleSupport {
 		label.setText(text.toString());
 
 		columnFigure.add(label);
+	}
+
+	@Override
+	protected IFigure getCenterFigure() {
+		return centerFigure;
 	}
 }

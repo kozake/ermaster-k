@@ -152,8 +152,12 @@ public class HorizontalLineAction extends AbstractBaseSelectionAction {
 			}
 
 			Category currentCategory = diagram.getCurrentCategory();
+
+			Rectangle bounds = editPart.getFigure().getBounds().getCopy();
+			bounds.setSize(editPart.getFigure().getMinimumSize());
+
 			MoveElementCommand moveCommand = new MoveElementCommand(diagram,
-					editPart.getFigure().getBounds(),
+					bounds,
 					x,
 					nodeElement.getY(currentCategory),
 					nodeElement.getWidth(currentCategory),

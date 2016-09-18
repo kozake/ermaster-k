@@ -7,6 +7,7 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ToolbarLayout;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
@@ -18,6 +19,8 @@ import org.insightech.er.editor.view.figure.table.column.GroupColumnFigure;
 public abstract class AbstractStyleSupport implements StyleSupport {
 
 	private TableFigure tableFigure;
+
+	private IFigure centerFigure;
 
 	public AbstractStyleSupport(TableFigure tableFigure) {
 		super();
@@ -45,6 +48,7 @@ public abstract class AbstractStyleSupport implements StyleSupport {
 	}
 
 	public void createColumnArea(IFigure columns) {
+		this.centerFigure = columns;
 		this.initColumnArea(columns);
 		this.tableFigure.add(columns, BorderLayout.CENTER);
 	}
@@ -143,8 +147,16 @@ public abstract class AbstractStyleSupport implements StyleSupport {
 	public void adjustBounds(Rectangle rect) {
 	}
 
+	public void adjustMinimumSize(Dimension dimension) {
+		dimension.setHeight(dimension.height() - this.getCenterFigure().getPreferredSize().height());
+	}
+
 	protected TableFigure getTableFigure() {
 		return tableFigure;
+	}
+
+	protected IFigure getCenterFigure() {
+		return centerFigure;
 	}
 
 	public void addColumnGroup(GroupColumnFigure columnFigure, int viewMode,

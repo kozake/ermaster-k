@@ -1,6 +1,7 @@
 package org.insightech.er.editor.view.figure.table.style;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Font;
 import org.insightech.er.editor.view.figure.table.column.GroupColumnFigure;
@@ -21,6 +22,8 @@ public interface StyleSupport {
 	public void setFont(Font font, Font titleFont);
 
 	public void adjustBounds(Rectangle rect);
+	
+	public void adjustMinimumSize(Dimension dimension);
 
 	public void addColumn(NormalColumnFigure columnFigure, int viewMode,
 			String physicalName, String logicalName, String type,

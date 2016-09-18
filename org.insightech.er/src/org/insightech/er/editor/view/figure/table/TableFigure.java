@@ -5,6 +5,7 @@ import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.RoundedRectangle;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -134,11 +135,14 @@ public class TableFigure extends RoundedRectangle {
 		super.fillShape(graphics);
 	}
 
-	/**
-	 * columns ‚ðŽæ“¾‚µ‚Ü‚·.
-	 * 
-	 * @return columns
-	 */
+	@Override
+	public Dimension getMinimumSize(int wHint, int hHint) {
+		Dimension dimension = super.getMinimumSize(wHint, hHint);
+		styleSupport.adjustMinimumSize(dimension);
+		
+		return dimension;
+	}
+
 	public Figure getColumns() {
 		return columns;
 	}

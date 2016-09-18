@@ -148,8 +148,11 @@ public class VerticalLineAction extends AbstractBaseSelectionAction {
 				y = start;
 			}
 
+			Rectangle bounds = editPart.getFigure().getBounds().getCopy();
+			bounds.setSize(editPart.getFigure().getMinimumSize());
+
 			MoveElementCommand moveCommand = new MoveElementCommand(this
-					.getDiagram(), editPart.getFigure().getBounds(),
+					.getDiagram(), bounds,
 					nodeElement.getX(currentCategory),
 					y,
 					nodeElement.getWidth(currentCategory),
