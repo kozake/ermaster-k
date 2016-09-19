@@ -286,18 +286,39 @@ public class XMLLoader {
 	}
 
 	private String[] getTagValues(Element element, String tagname) {
-		NodeList nodeList = element.getElementsByTagName(tagname);
+		return getTagValues(element, tagname, false);
+	}
 
-		String[] values = new String[nodeList.getLength()];
+	private String[] getTagValues(Element element, String tagname, boolean childOnly) {
+		NodeList nodeList = element.getElementsByTagName(tagname);
+		NodeList childNodeList = element.getChildNodes();
+
+		List<String> valuesList = new ArrayList<String>();
 
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node node = nodeList.item(i);
+
+			if (childOnly && !containNodeList(childNodeList, node)) {
+				continue;
+			}
+
 			if (node.getFirstChild() != null) {
-				values[i] = node.getFirstChild().getNodeValue();
+				valuesList.add(node.getFirstChild().getNodeValue());
 			}
 		}
 
-		return values;
+		return valuesList.toArray(new String[0]);
+	}
+	
+	private boolean containNodeList(NodeList nodeList, Node target) {
+		
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			Node childNode = nodeList.item(i);
+			if (childNode.equals(target)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private boolean getBooleanValue(Element element, String tagname) {
@@ -1354,7 +1375,7 @@ public class XMLLoader {
 			boolean isSelected = this.getBooleanValue(categoryElement,
 					"selected");
 
-			String[] keys = this.getTagValues(categoryElement, "node_element");
+			String[] keys = this.getTagValues(categoryElement, "node_element", true);
 
 			List<NodeElement> nodeElementList = new ArrayList<NodeElement>();
 
