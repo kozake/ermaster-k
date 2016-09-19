@@ -6,5 +6,8 @@
    <feature url="features/org.insightech.er.feature_1.0.0.v20160918-2330.jar" id="org.insightech.er.feature" version="1.0.0.v20160918-2330">
       <category name="ermaster"/>
    </feature>
+   <feature url="features/org.insightech.er.feature_1.0.0.v20160919-1800.jar" id="org.insightech.er.feature" version="1.0.0.v20160919-1800">
+      <category name="ermaster"/>
+   </feature>
    <category-def name="ermaster" label="ERMaster"/>
 </site>
