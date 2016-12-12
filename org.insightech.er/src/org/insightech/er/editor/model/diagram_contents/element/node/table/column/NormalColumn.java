@@ -365,9 +365,20 @@ public class NormalColumn extends Column {
 		this.foreignKeyLogicalName = this.getLogicalName();
 		this.foreignKeyPhysicalName = this.getPhysicalName();
 
-		this.referencedColumnList.add(referencedColumn);
+		System.out.println("addReference======================");
+		System.out.println(this);
+		System.out.println(referencedColumn.getLogicalName());
+		System.out.println(referencedColumn);
+		System.out.println(relation.getName());
+		System.out.println(relation);
+		
+		if (!this.referencedColumnList.contains(referencedColumn)) {
+			this.referencedColumnList.add(referencedColumn);
+		}
 
-		this.relationList.add(relation);
+		if (!this.relationList.contains(relation)) {
+			this.relationList.add(relation);
+		}
 
 		copyData(this, this);
 
